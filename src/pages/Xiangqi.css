@@ -1,0 +1,134 @@
+.xiangqi-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
+    margin-top: 20px;
+}
+
+.xiangqi-board {
+    position: relative;
+    width: 542px; /* 9 * 60 + 2 */
+    height: 602px; /* 10 * 60 + 2 */
+    background-color: #f0d9b5;
+    border: 2px solid #333;
+    border-radius: 5px;
+    background-image: 
+        repeating-linear-gradient(to right, #666 0 1px, transparent 1px 60px),
+        repeating-linear-gradient(to bottom, #666 0 1px, transparent 1px 60px);
+    background-size: 60px 60px;
+    background-position: 30px 30px;
+}
+
+.palace {
+    position: absolute;
+    width: 120px; /* 2 * 60 */
+    height: 120px; /* 2 * 60 */
+    background-image: 
+        linear-gradient(to bottom right, transparent 49.5%, #666 49.5%, #666 50.5%, transparent 50.5%),
+        linear-gradient(to bottom left, transparent 49.5%, #666 49.5%, #666 50.5%, transparent 50.5%);
+}
+
+.palace-top {
+    top: 30px;
+    left: 210px; /* 3 * 60 + 30 */
+}
+
+.palace-bottom {
+    bottom: 30px;
+    left: 210px;
+}
+
+.river {
+    position: absolute;
+    top: 270px; /* 4.5 * 60 */
+    left: 0;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    color: #8c7853;
+    letter-spacing: 1rem;
+    background-color: #f0d9b5;
+}
+
+.status-bar {
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #333;
+    height: 30px;
+}
+
+.check-status {
+    color: #e74c3c;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.piece {
+    position: absolute;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    transform: translate(-50%, -50%); /* Center on intersection */
+}
+
+.piece.r {
+    background-color: #ff6b6b;
+    color: white;
+    border: 2px solid #c44d4d;
+}
+
+.piece.b {
+    background-color: #555;
+    color: white;
+    border: 2px solid #222;
+}
+
+.piece.selected {
+    box-shadow: 0 0 15px 5px #ffdf00;
+}
+
+.intersection {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    cursor: pointer;
+}
+
+.possible-move::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    background-color: rgba(46, 204, 113, 0.5);
+    border-radius: 50%;
+}
+
+.xiangqi-board-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 560px) {
+  .xiangqi-board {
+    transform: scale(0.68);
+  }
+}

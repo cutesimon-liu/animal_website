@@ -1,0 +1,116 @@
+
+/* Overall container */
+.game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
+}
+
+.game h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.game-controls {
+    margin-bottom: 20px;
+}
+
+/* Status message */
+.status {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #333; /* Darkened for better contrast */
+  height: 30px;
+  transition: all 0.3s ease;
+}
+
+/* Game board */
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  gap: 10px;
+}
+
+/* Individual square */
+.square {
+  background: #fff;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.square:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Base styles for X and O marks */
+.square.is-x, .square.is-o {
+    animation: draw 0.3s ease-in-out forwards;
+}
+
+@keyframes draw {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* Styling for X using gradients */
+.square.is-x {
+    background-image: 
+        linear-gradient(45deg, transparent 42%, #ff6b6b 42%, #ff6b6b 58%, transparent 58%),
+        linear-gradient(-45deg, transparent 42%, #ff6b6b 42%, #ff6b6b 58%, transparent 58%);
+    background-color: #fff;
+}
+
+/* Styling for O */
+.square.is-o::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    right: 10%;
+    bottom: 10%;
+    border: 12px solid #4d96ff; /* A nice blue */
+    border-radius: 50%;
+}
+
+/* Reset button */
+.reset-button {
+  margin-top: 25px;
+  padding: 12px 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background-color: #555;
+  color: white;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.reset-button:hover {
+  background-color: #333;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.tictactoe-board-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 480px) {
+  .tictactoe-board-container {
+    transform: scale(0.75);
+  }
+}

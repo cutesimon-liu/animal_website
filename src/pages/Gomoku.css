@@ -1,0 +1,106 @@
+.gomoku-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
+  margin-top: 20px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.gomoku-status {
+  margin-bottom: 15px;
+  font-size: 22px;
+  font-weight: 500;
+  color: #333;
+  height: 30px;
+}
+
+.gomoku-board {
+  display: grid;
+  grid-template-columns: repeat(15, 30px);
+  grid-template-rows: repeat(15, 30px);
+  border: 2px solid #8B4513;
+  background-color: #DEB887; /* BurlyWood */
+  padding: 15px; /* Add padding to see the outer border */
+  position: relative;
+  background-image: 
+    repeating-linear-gradient(#8B4513 0 1px, transparent 1px 100%),
+    repeating-linear-gradient(90deg, #8B4513 0 1px, transparent 1px 100%);
+  background-size: 30px 30px;
+  background-position: 0 0;
+}
+
+.gomoku-board-row {
+  display: contents;
+}
+
+.gomoku-square {
+  width: 30px;
+  height: 30px;
+  box-sizing: border-box;
+  position: relative;
+  cursor: pointer;
+}
+
+.stone {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.stone.B {
+  background-color: black;
+}
+
+.stone.W {
+  background-color: white;
+}
+
+.last-move-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: red;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.gomoku-reset-button {
+  margin-top: 20px;
+  padding: 10px 25px;
+  font-size: 18px;
+  cursor: pointer;
+  border: none;
+  background-color: #4CAF50; /* Green */
+  color: white;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+.gomoku-reset-button:hover {
+  background-color: #45a049;
+}
+
+.gomoku-board-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 480px) {
+  .gomoku-board {
+    transform: scale(0.75);
+  }
+}

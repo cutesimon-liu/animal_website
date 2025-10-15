@@ -1,0 +1,209 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Noto+Sans+TC:wght@400;700&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Noto Sans TC', 'Nunito', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center center;
+  color: white;
+  transition: background-image 0.5s ease-in-out;
+  line-height: 1.6;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1.2rem;
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+h4 {
+  font-size: 1.5rem;
+  margin-bottom: 0.8rem;
+  font-weight: 700;
+}
+
+h5 {
+  font-size: 1.2rem;
+  margin-bottom: 0.6rem;
+  font-weight: 700;
+}
+
+h6 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.lead {
+  font-size: 1.25rem;
+  font-weight: 300;
+}
+
+small {
+  font-size: 0.875em;
+}
+
+.default-bg {
+  background-image: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjVlMzF8MHwxfHNlYXJjaHwxfHpuYXR1cmUlMjBncmVlbnxlbnwwfHx8fDE2NzEwNjY2NjY&ixlib=rb-4.0.3&q=80&w=1080');
+}
+
+.universe-bg {
+  background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa');
+}
+
+.game-bg {
+  background-image: url('/src/assets/images/game_bg.png');
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', 'Fredoka One', sans-serif;
+  color: #a7e9af; /* A light green color */
+}
+
+.main-content-container {
+  background-color: transparent;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: none;
+}
+
+/* ... (rest of original CSS) ... */
+
+.game-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.planet-facts-table {
+  border: none;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+.planet-facts-table thead {
+  background-color: #004d00;
+  color: white;
+}
+
+.planet-facts-table th,
+.planet-facts-table td {
+  border: none;
+  padding: 15px;
+  vertical-align: middle;
+}
+
+.planet-facts-table tbody tr {
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease-in-out;
+}
+
+.planet-facts-table tbody tr:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.planet-facts-table td:first-child {
+  font-weight: bold;
+  color: #212529;
+}
+
+.planet-facts-table td {
+  color: #212529;
+}
+
+@keyframes float1 {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+    top: -10vh;
+    left: var(--start-x);
+  }
+  100% {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0;
+    top: 110vh;
+    left: var(--end-x);
+  }
+}
+
+@keyframes float2 {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+    top: -10vh;
+    left: var(--start-x);
+  }
+  50% {
+    transform: translateY(55vh) rotate(180deg);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0;
+    top: 110vh;
+    left: var(--end-x);
+  }
+}
+
+@keyframes float3 {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+    top: -10vh;
+    left: var(--start-x);
+  }
+  25% {
+    transform: translateY(25vh) rotate(90deg);
+  }
+  75% {
+    transform: translateY(75vh) rotate(270deg);
+  }
+  100% {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0;
+    top: 110vh;
+    left: var(--end-x);
+  }
+}
+
+.floating-element {
+  position: absolute;
+  color: #fff;
+  text-shadow: none; /* Remove default glow */
+  z-index: 1;
+  pointer-events: auto;
+  transition: opacity 0.2s ease-out, text-shadow 0.3s ease-in-out; /* Add transition for glow */
+}
+
+.floating-element:hover {
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 16px rgba(255, 255, 255, 0.6);
+}
+
+.disappear-element {
+  opacity: 0 !important;
+}
+

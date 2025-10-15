@@ -1,0 +1,99 @@
+/* Solar System Animation Styles */
+.solar-system-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh; /* Ensure it has space */
+  overflow: hidden; /* Hide parts of orbits that go off-screen */
+}
+
+.solar-system {
+  position: relative;
+  width: 80vmin; /* Use vmin to keep it circular and responsive */
+  height: 80vmin;
+  transform: scale(0.8); /* Adjust scale as needed */
+}
+
+.sun {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12%; /* 12% of solar system size */
+  height: 12%;
+  background-color: #ffc107; /* Yellow */
+  border-radius: 50%;
+  box-shadow: 0 0 60px #ffc107, 0 0 90px #ffc107;
+}
+
+.orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: rotate-orbit linear infinite;
+  pointer-events: none; /* Allow clicks to pass through the orbit div */
+}
+
+.planet-container {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 100%;
+}
+
+.planet {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background-color: #ccc;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+  pointer-events: auto; /* Make planets clickable */
+}
+
+.planet:hover {
+    transform: translate(-50%, -50%) scale(1.5);
+}
+
+/* Specific styles for each planet */
+.mercury-orbit { width: 20%; height: 20%; animation-duration: 8.8s; }
+.mercury { width: 10%; height: 10%; background-color: #adb5bd; }
+
+.venus-orbit { width: 30%; height: 30%; animation-duration: 22.5s; }
+.venus { width: 15%; height: 15%; background-color: #e67e22; }
+
+.earth-orbit { width: 42%; height: 42%; animation-duration: 36.5s; }
+.earth { width: 15%; height: 15%; background-color: #2980b9; }
+
+.mars-orbit { width: 55%; height: 55%; animation-duration: 68.7s; }
+.mars { width: 12%; height: 12%; background-color: #c0392b; }
+
+.jupiter-orbit { width: 75%; height: 75%; animation-duration: 120s; } /* Simplified duration */
+.jupiter { width: 25%; height: 25%; background-color: #f39c12; }
+
+.saturn-orbit { width: 95%; height: 95%; animation-duration: 290s; } /* Simplified duration */
+.saturn { width: 22%; height: 22%; background-color: #f1c40f; }
+/* TODO: Add Saturn's rings */
+
+.uranus-orbit { width: 110%; height: 110%; animation-duration: 840s; } /* Simplified duration */
+.uranus { width: 18%; height: 18%; background-color: #1abc9c; }
+
+.neptune-orbit { width: 125%; height: 125%; animation-duration: 1650s; } /* Simplified duration */
+.neptune { width: 17%; height: 17%; background-color: #3498db; }
+
+
+@keyframes rotate-orbit {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
