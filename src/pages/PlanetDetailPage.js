@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Row, Col, Image, Table, Alert } from 'react-bootstrap';
+import { Row, Col, Image, Table, Alert } from 'react-bootstrap';
 import { useParams, Link } from 'react-router-dom';
 import { solarSystemData } from '../data/planets';
 
