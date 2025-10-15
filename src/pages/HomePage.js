@@ -166,7 +166,7 @@ function HomePage() {
 
       <Row>
         {/* Left Column for the Book */}
-        <Col lg={9} xs={12}>
+        <Col md={12} lg={9} xs={12}>
           <div className="d-flex justify-content-center mb-3">
             <Button variant="secondary" onClick={prevPage} disabled={currentPage === 0 || !flipBook.current?.pageFlip()} className="me-2">
               上一頁
@@ -183,8 +183,8 @@ function HomePage() {
             <Col xs={12}>
                 <HTMLFlipBook
                   key={selectedCategory}
-                  width={800}
-                  height={1200}
+                  width={500}
+                  height={750}
                   size="stretch"
                   minWidth={315}
                   maxWidth={1000}
@@ -223,7 +223,7 @@ function HomePage() {
         </Col>
 
         {/* Right Column for Comment Board */}
-        <Col lg={3} className="d-none d-lg-block">
+        <Col md={12} lg={3}>
           <CommentBoard />
         </Col>
       </Row>

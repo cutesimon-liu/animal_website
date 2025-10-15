@@ -1,3 +1,8 @@
+:root {
+    --gomoku-board-width: 90vw;
+    --gomoku-cell-size: calc(var(--gomoku-board-width) / 15);
+}
+
 .gomoku-game {
   display: flex;
   flex-direction: column;
@@ -13,7 +18,7 @@
 
 .gomoku-status {
   margin-bottom: 15px;
-  font-size: 22px;
+  font-size: clamp(16px, 4vw, 22px);
   font-weight: 500;
   color: #333;
   height: 30px;
@@ -21,16 +26,16 @@
 
 .gomoku-board {
   display: grid;
-  grid-template-columns: repeat(15, 30px);
-  grid-template-rows: repeat(15, 30px);
+  grid-template-columns: repeat(15, var(--gomoku-cell-size));
+  grid-template-rows: repeat(15, var(--gomoku-cell-size));
   border: 2px solid #8B4513;
   background-color: #DEB887; /* BurlyWood */
-  padding: 15px; /* Add padding to see the outer border */
+  padding: calc(var(--gomoku-cell-size) / 2);
   position: relative;
   background-image: 
     repeating-linear-gradient(#8B4513 0 1px, transparent 1px 100%),
     repeating-linear-gradient(90deg, #8B4513 0 1px, transparent 1px 100%);
-  background-size: 30px 30px;
+  background-size: var(--gomoku-cell-size) var(--gomoku-cell-size);
   background-position: 0 0;
 }
 
@@ -39,8 +44,8 @@
 }
 
 .gomoku-square {
-  width: 30px;
-  height: 30px;
+  width: var(--gomoku-cell-size);
+  height: var(--gomoku-cell-size);
   box-sizing: border-box;
   position: relative;
   cursor: pointer;
@@ -51,8 +56,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 24px;
-  height: 24px;
+  width: calc(var(--gomoku-cell-size) * 0.8);
+  height: calc(var(--gomoku-cell-size) * 0.8);
   border-radius: 50%;
   box-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
@@ -66,8 +71,8 @@
 }
 
 .last-move-indicator {
-    width: 8px;
-    height: 8px;
+    width: calc(var(--gomoku-cell-size) * 0.25);
+    height: calc(var(--gomoku-cell-size) * 0.25);
     border-radius: 50%;
     background-color: red;
     position: absolute;
@@ -99,8 +104,8 @@
   align-items: center;
 }
 
-@media (max-width: 480px) {
-  .gomoku-board {
-    transform: scale(0.75);
-  }
+@media (min-width: 600px) {
+    :root {
+        --gomoku-board-width: 450px;
+    }
 }

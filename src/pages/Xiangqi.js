@@ -463,7 +463,10 @@ const Xiangqi = ({ gameMode, difficulty, resetSignal }) => {
                                     <div
                                         key={`${r}-${c}`}
                                         className={`intersection ${isPossibleMove ? 'possible-move' : ''}`}
-                                        style={{ top: (r * 60) + 30, left: (c * 60) + 30 }}
+                                        style={{
+                                            top: `${r * (100 / 9)}%`,
+                                            left: `${c * (100 / 8)}%`,
+                                        }}
                                         onClick={() => handleSquareClick(r, c)}
                                     />
                                 );
@@ -477,7 +480,10 @@ const Xiangqi = ({ gameMode, difficulty, resetSignal }) => {
                                     <div
                                         key={`${r}-${c}-piece`}
                                         className={`piece ${piece.color} ${isSelected ? 'selected' : ''}`}
-                                        style={{ top: (r * 60) + 30, left: (c * 60) + 30 }}
+                                        style={{
+                                            top: `${r * (100 / 9)}%`,
+                                            left: `${c * (100 / 8)}%`,
+                                        }}
                                         onClick={() => handleSquareClick(r, c)}
                                     >
                                         {piece.name}
