@@ -16,10 +16,14 @@ const ThemeLayout = ({ children }) => {
 
   useEffect(() => {
     const path = location.pathname;
-    if (path.startsWith('/universe') || path.startsWith('/planet')) {
+    if (path === '/') {
+      document.body.className = 'first-bg';
+    } else if (path.startsWith('/universe') || path.startsWith('/planet')) {
       document.body.className = 'universe-bg';
     } else if (path.startsWith('/tictactoe') || path.startsWith('/gomoku') || path.startsWith('/xiangqi')) {
       document.body.className = 'game-bg';
+    } else if (path.startsWith('/animal') || path.startsWith('/animals')) {
+      document.body.className = 'animal-bg';
     } else {
       document.body.className = 'default-bg';
     }

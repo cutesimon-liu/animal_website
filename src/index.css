@@ -81,12 +81,20 @@ small {
   background-image: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjVlMzF8MHwxfHNlYXJjaHwxfHpuYXR1cmUlMjBncmVlbnxlbnwwfHx8fDE2NzEwNjY2NjY&ixlib=rb-4.0.3&q=80&w=1080');
 }
 
+.first-bg {
+  background-image: url('/src/assets/images/first_bg.png');
+}
+
 .universe-bg {
   background-image: url('/src/assets/images/star_bg.png');
 }
 
 .game-bg {
   background-image: url('/src/assets/images/game_bg.png');
+}
+
+.animal-bg {
+  background-image: url('/src/assets/images/animal_bg.png');
 }
 
 h1, h2, h3, h4, h5, h6 {
