@@ -10,6 +10,8 @@ import Gomoku from './pages/Gomoku';
 import Xiangqi from './pages/Xiangqi';
 import UniversePage from './pages/UniversePage';
 import PlanetDetailPage from './pages/PlanetDetailPage';
+import UniverseKnowledgeDetailPage from './pages/UniverseKnowledgeDetailPage';
+
 
 const ThemeLayout = ({ children }) => {
   const location = useLocation();
@@ -63,6 +65,8 @@ function App() {
               <Route path="/tictactoe" element={<TicTacToe />} />
               <Route path="/gomoku" element={<Gomoku />} />
               <Route path="/xiangqi" element={<Xiangqi />} />
+              <Route path="/universe-knowledge/:id" element={<UniverseKnowledgeDetailPage />} />
+              
             </Routes>
           </Container>
         </main>

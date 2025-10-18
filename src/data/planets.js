@@ -9,6 +9,7 @@ import uranusImage from '../assets/images/planets/uranus.png';
 import neptuneImage from '../assets/images/planets/neptune.png';
 import moonImage from '../assets/images/planets/moon.png';
 import asteroidBeltImage from '../assets/images/planets/asteroid-belt.png'; // Placeholder
+import meteorImage from '../assets/images/planets/meteor.png';
 
 export const solarSystemData = {
   source: "NASA",
@@ -160,6 +161,20 @@ export const solarSystemData = {
             "軌道週期": "164.8 年",
         },
         size: 0.75
+    },
+    {
+      id: "meteor",
+      name: "流星",
+      name_en: "Meteor",
+      description: "流星是當微小的太空塵埃或岩石（稱為流星體）進入地球大氣層並高速燃燒時，所產生的可見光跡。這些粒子的大小可以從一粒沙到一顆小石頭不等。當它們以每秒數十公里的速度撞擊大氣層時，空氣的摩擦力會將其加熱至白熾狀態，形成一道短暫的亮光。如果流星體在完全蒸發前到達地面，則被稱為隕石。",
+      image: meteorImage,
+      facts: {
+        "大小": "通常為沙粒到卵石大小",
+        "速度": "11-72公里/秒",
+        "可見高度": "75-120公里",
+        "來源": "通常是彗星或小行星的碎片"
+      },
+      size: 0.1
     }
   ]
 };

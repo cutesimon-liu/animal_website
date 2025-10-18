@@ -1,9 +1,12 @@
 import React, { useRef, Suspense, useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link, BrowserRouter } from 'react-router-dom';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Stars, OrbitControls, Html, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import { solarSystemData } from '../data/planets';
+import universeKnowledge from '../data/universeKnowledge';
+import { Container, Row, Col, Card } from 'react-bootstrap';
+
 
 // Texture URLs
 const textureUrls = {
@@ -19,6 +22,7 @@ const textureUrls = {
   saturnRing: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/saturnringpattern.gif',
   uranus: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/uranusmap.jpg',
   neptune: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/neptunemap.jpg',
+  meteor: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/sunmap.jpg', // Placeholder
 };
 
 // A component for the elliptical orbit path
@@ -270,76 +274,58 @@ function Sun() {
 
 // Meteor Component
 function Meteor() {
-    const meshRef = useRef();
-    const trailParticles = useRef([]);
-    const speed = 0.002; // Current speed
-    const navigate = useNavigate(); // Assuming navigate might be used for clicking meteor
+    const meteorRef = useRef();
+    const navigate = useNavigate();
+    const [isHovered, setIsHovered] = useState(false);
+    const meteorData = solarSystemData.planets.find(p => p.id === 'meteor');
 
-    // Randomize initial position and velocity
-    const initialSetup = useMemo(() => {
-        const startX = Math.random() * 120 - 60; // -60 to 60
-        const startY = Math.random() * 40 + 10; // 10 to 50
-        const startZ = Math.random() * 120 - 60; // -60 to 60
-        const initialPos = new THREE.Vector3(startX, startY, startZ);
+    // Set initial position to top-left
+    const initialPos = useMemo(() => new THREE.Vector3(-50, 30, 0), []);
 
-        const velX = (Math.random() - 0.5) * 0.5; // -0.25 to 0.25
-        const velY = (Math.random() - 0.5) * 0.2; // -0.1 to 0.1
-        const velZ = (Math.random() - 0.5) * 0.5; // -0.25 to 0.25
-        const velocity = new THREE.Vector3(velX, velY, velZ).normalize().multiplyScalar(speed * 100); // Scale velocity
+    // Set velocity to move from top-left to bottom-right
+    const velocity = useMemo(() => new THREE.Vector3(1, -0.5, 0).normalize().multiplyScalar(0.2), []);
 
-        return { initialPos, velocity };
-    }, []);
-
-    const { initialPos, velocity } = initialSetup;
     const currentPosition = useRef(initialPos.clone());
 
     useFrame((state, delta) => {
-        if (meshRef.current) {
-            // Update meteor position
-            currentPosition.current.add(velocity.clone().multiplyScalar(delta * 60)); // Multiply by 60 for frame rate independence
+        if (meteorRef.current && !isHovered) {
+            // Move the meteor
+            currentPosition.current.add(velocity.clone().multiplyScalar(delta * 60));
 
-            // Reset meteor when it goes off-screen (adjust bounds as needed)
-            if (currentPosition.current.x < -80 || currentPosition.current.x > 80 ||
-                currentPosition.current.y < -20 || currentPosition.current.y > 80 ||
-                currentPosition.current.z < -80 || currentPosition.current.z > 80) {
+            // Reset meteor when it goes off-screen
+            if (currentPosition.current.x > 80 || currentPosition.current.y < -40) {
                 currentPosition.current.copy(initialPos);
-                velocity.set((Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.2, (Math.random() - 0.5) * 0.5).normalize().multiplyScalar(speed * 100);
             }
-            meshRef.current.position.copy(currentPosition.current);
-
-            // Add trail particles
-            if (state.clock.elapsedTime % 0.05 < delta) { // Spawn a particle every 0.05 seconds
-                trailParticles.current.push({
-                    position: currentPosition.current.clone(),
-                    life: 1.0, // seconds
-                    size: Math.random() * 0.1 + 0.05,
-                    color: new THREE.Color(0.8, 0.8, 1.0), // Bluish white
-                });
-            }
-
-            // Update and remove old trail particles
-            for (let i = trailParticles.current.length - 1; i >= 0; i--) {
-                const p = trailParticles.current[i];
-                p.life -= delta;
-                if (p.life <= 0) {
-                    trailParticles.current.splice(i, 1);
-                }
-            }
+            meteorRef.current.position.copy(currentPosition.current);
+            meteorRef.current.rotation.z = Math.atan2(velocity.y, velocity.x) - Math.PI / 2;
         }
     });
 
     return (
-        <group>
-            <mesh ref={meshRef} position={initialPos}>
-                <sphereGeometry args={[0.5, 16, 16]} />
+        <group 
+            ref={meteorRef}
+            onPointerOver={(e) => { e.stopPropagation(); setIsHovered(true); }}
+            onPointerOut={(e) => { e.stopPropagation(); setIsHovered(false); }}
+            onClick={(e) => { e.stopPropagation(); navigate('/planet/meteor'); }}
+        >
+            {/* Head */}
+            <mesh>
+                <sphereGeometry args={[1.2, 16, 16]} />
                 <meshBasicMaterial color="white" />
             </mesh>
-            {trailParticles.current.map((p, i) => (
-                <mesh key={i} position={p.position} scale={p.size * p.life}>
-                    <sphereGeometry args={[1, 8, 8]} />
-                    <meshBasicMaterial color={p.color} transparent opacity={p.life} />
+            {/* Tail */}
+            {Array.from({ length: 10 }).map((_, i) => (
+                <mesh key={i} position={[0, -i * 2, 0]}>
+                    <coneGeometry args={[1.6 * (1 - i / 10), 2, 16]} />
+                    <meshBasicMaterial
+                        color="white"
+                        transparent
+                        opacity={0.5 * (1 - i / 10)}
+                        blending={THREE.AdditiveBlending}
+                    />
                 </mesh>
             ))}
+            {isHovered && <Html><div className="planet-label">{meteorData.name}</div></Html>}
         </group>
     );
 }
@@ -349,7 +335,7 @@ function Meteor() {
 function UniversePage() {
   const planetsWith3DData = solarSystemData.planets.map(p => {
       const eccentricity = 0.98;
-      const sizeFactor = 1.25;
+      const sizeFactor = 2.5;
       switch(p.id) {
           case 'sun': return {...p, size: 3 };
           case 'mercury': return {...p, size: 0.2 * sizeFactor, semiMajor: 6, semiMinor: 6 * eccentricity, speed: 0.8 };
@@ -360,55 +346,76 @@ function UniversePage() {
           case 'saturn': return {...p, size: 1 * sizeFactor, semiMajor: 30, semiMinor: 30 * eccentricity, speed: 0.1 };
           case 'uranus': return {...p, size: 0.8 * sizeFactor, semiMajor: 37, semiMinor: 37 * eccentricity, speed: 0.05 };
           case 'neptune': return {...p, size: 0.75 * sizeFactor, semiMajor: 43, semiMinor: 43 * eccentricity, speed: 0.03 };
+          case 'meteor': return {...p, size: 0.1 * sizeFactor, semiMajor: 0, semiMinor: 0, speed: 0 }; // Not orbiting
           default: return p;
       }
   });
 
-  const orbitingPlanets = planetsWith3DData.filter(p => p.id !== 'sun' && p.id !== 'moon' && p.id !== 'asteroid-belt');
+  const orbitingPlanets = planetsWith3DData.filter(p => p.id !== 'sun' && p.id !== 'moon' && p.id !== 'asteroid-belt' && p.id !== 'meteor');
 
   return (
-    <div style={{ height: '100vh', width: '100vw', position: 'fixed', top: 0, left: 0, zIndex: -1 }}>
-        <Suspense fallback={<div style={{color: 'white', textAlign: 'center'}}>載入中...</div>}>
-            <Canvas camera={{ position: [0, 45, 70], fov: 45 }} shadows>
-                <ambientLight intensity={0.2} />
-                <pointLight color="#ffffff" position={[0, 0, 0]} intensity={2.5} castShadow />
-                <Stars radius={300} depth={60} count={5000} factor={10} saturation={0} fade speed={1} />
+    <div style={{ position: 'relative', minHeight: '100vh', overflow: 'auto' }}>
+        <div style={{ height: '50vh', width: '100vw', position: 'relative', zIndex: 0 }}>
+            <Suspense fallback={<div style={{color: 'white', textAlign: 'center'}}>載入中...</div>}>
+                <Canvas camera={{ position: [0, 45, 70], fov: 45 }} shadows>
+                    <ambientLight intensity={0.2} />
+                    <pointLight color="#ffffff" position={[0, 0, 0]} intensity={2.5} castShadow />
+                    <Stars radius={300} depth={60} count={5000} factor={10} saturation={0} fade speed={1} />
 
-                <group rotation-x={-Math.PI / 8}>
-                    <Sun />
-                    <AsteroidBelt />
-                    {orbitingPlanets.map(planet => {
-                        if (planet.id === 'earth') {
-                            return <Earth
+                    <group rotation-x={-Math.PI / 8} position={[-40, 0, 0]} scale={2.2}>
+                        <Sun />
+                        <AsteroidBelt />
+                        {orbitingPlanets.map(planet => {
+                            if (planet.id === 'earth') {
+                                return <Earth
+                                    key={planet.id}
+                                    planetData={planet}
+                                    semiMajor={planet.semiMajor}
+                                    semiMinor={planet.semiMinor}
+                                    speed={planet.speed}
+                                />;
+                            } else if (planet.id === 'saturn') {
+                                return <Saturn
+                                    key={planet.id}
+                                    planetData={planet}
+                                    semiMajor={planet.semiMajor}
+                                    semiMinor={planet.semiMinor}
+                                    speed={planet.speed}
+                                />;
+                            }
+                            return <Planet
                                 key={planet.id}
                                 planetData={planet}
                                 semiMajor={planet.semiMajor}
                                 semiMinor={planet.semiMinor}
                                 speed={planet.speed}
+                                textureUrl={textureUrls[planet.id]}
                             />;
-                        } else if (planet.id === 'saturn') {
-                            return <Saturn
-                                key={planet.id}
-                                planetData={planet}
-                                semiMajor={planet.semiMajor}
-                                semiMinor={planet.semiMinor}
-                                speed={planet.speed}
-                            />;
-                        }
-                        return <Planet
-                            key={planet.id}
-                            planetData={planet}
-                            semiMajor={planet.semiMajor}
-                            semiMinor={planet.semiMinor}
-                            speed={planet.speed}
-                            textureUrl={textureUrls[planet.id]}
-                        />;
-                    })}
-                </group>
+                        })}
+                    </group>
+                    <Meteor />
+                    <OrbitControls enablePan={true} enableZoom={false} enableRotate={false} minDistance={20} maxDistance={150} maxPolarAngle={Math.PI / 2.1} />
+                </Canvas>
+            </Suspense>
+        </div>
 
-                <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} minDistance={20} maxDistance={150} maxPolarAngle={Math.PI / 2.1} />
-            </Canvas>
-        </Suspense>
+        <div style={{ position: 'relative', zIndex: 1, minHeight: '50vh', padding: '20px 0' }}>
+            <Container className="py-5">
+                <Row className="g-4 justify-content-center">
+                    {universeKnowledge.map((item) => (
+                        <Col md={6} lg={4} key={item.id}>
+                            <Card className="h-100 text-white" style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(5px)' }}>
+                                <Card.Body>
+                                    <Card.Title>{item.title}</Card.Title>
+                                    <Card.Text>{item.shortDescription}</Card.Text>
+                                    <button onClick={() => window.location.href = `/universe-knowledge/${item.id}`} className="btn btn-outline-light">了解更多</button>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    ))}
+                </Row>
+            </Container>
+        </div>
     </div>
   );
 }
