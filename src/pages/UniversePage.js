@@ -5,8 +5,8 @@ import { Stars, OrbitControls, Html, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import { solarSystemData } from '../data/planets';
 import universeKnowledge from '../data/universeKnowledge';
-import { Container, Row, Col, Card } from 'react-bootstrap';
-
+import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap';
+import SolarSystemMenu from '../components/SolarSystemMenu';
 
 // Texture URLs
 const textureUrls = {
@@ -25,6 +25,20 @@ const textureUrls = {
   meteor: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/sunmap.jpg', // Placeholder
 };
 
+const planetColors = {
+    pluto: '#A9A9A9',
+}
+
+const moonColors = {
+    io: 'yellow',
+    europa: '#A67B5B',
+    ganymede: '#8B4513',
+    callisto: '#5C3317',
+    titan: 'orange',
+    enceladus: 'white',
+    moon: 'gray',
+}
+
 // A component for the elliptical orbit path
 function Orbit({ semiMajor, semiMinor }) {
   const points = new THREE.EllipseCurve(0, 0, semiMajor, semiMinor, 0, 2 * Math.PI, false, 0).getPoints(100);
@@ -37,20 +51,21 @@ function Orbit({ semiMajor, semiMinor }) {
 }
 
 // Generic Planet Component
-function Planet({ planetData, semiMajor, semiMinor, speed, textureUrl }) {
+function Planet({ planetData, semiMajor, semiMinor, speed, textureUrl, color, isPaused, speedMultiplier }) {
   const meshRef = useRef();
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
   const animationTimeRef = useRef(0);
-  const texture = useTexture(textureUrl);
+  const texture = useTexture(textureUrl || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');
 
   useFrame((state, delta) => {
+    if (isPaused) return;
     if (!isHovered) {
-        animationTimeRef.current += delta;
+        animationTimeRef.current += delta * speedMultiplier;
     }
     meshRef.current.position.x = semiMajor * Math.cos(animationTimeRef.current * speed);
     meshRef.current.position.z = semiMinor * Math.sin(animationTimeRef.current * speed);
-    meshRef.current.rotation.y += 0.005;
+    meshRef.current.rotation.y += 0.005 * speedMultiplier;
   });
 
   return (
@@ -64,7 +79,7 @@ function Planet({ planetData, semiMajor, semiMinor, speed, textureUrl }) {
         castShadow
       >
         <sphereGeometry args={[planetData.size, 32, 32]} />
-        <meshStandardMaterial map={texture} emissiveIntensity={isHovered ? 0.5 : 0} emissive="white" />
+        <meshStandardMaterial map={textureUrl ? texture : null} color={color} emissiveIntensity={isHovered ? 0.5 : 0} emissive="white" />
         {isHovered && <Html><div className="planet-label">{planetData.name}</div></Html>}
       </mesh>
     </group>
@@ -72,68 +87,92 @@ function Planet({ planetData, semiMajor, semiMinor, speed, textureUrl }) {
 }
 
 // Earth Component with Clouds and Moon
-function Earth({ planetData, semiMajor, semiMinor, speed }) {
-    const earthRef = useRef();
-    const cloudsRef = useRef();
+function Moon({ moonData, planetRef, orbitRadius, speed, isPaused, speedMultiplier, onHover }) {
     const moonRef = useRef();
     const navigate = useNavigate();
-    const [isEarthHovered, setIsEarthHovered] = useState(false);
     const [isMoonHovered, setIsMoonHovered] = useState(false);
     const animationTimeRef = useRef(0);
-    const [earthTexture, cloudsTexture, moonTexture] = useTexture([textureUrls.earth, textureUrls.earthClouds, textureUrls.moon]);
-    const moonData = solarSystemData.planets.find(p => p.id === 'moon');
-    const moonOrbitRadius = 2.5;
-    const moonSpeed = 2;
 
     useFrame((state, delta) => {
-        if (!isEarthHovered && !isMoonHovered) {
-            animationTimeRef.current += delta;
+        if (isPaused) return;
+        if (!isMoonHovered) {
+            animationTimeRef.current += delta * speedMultiplier;
+            if (moonRef.current) {
+                moonRef.current.rotation.y += 0.005 * speedMultiplier;
+            }
         }
-        const earthAngle = animationTimeRef.current * speed;
-        earthRef.current.position.x = semiMajor * Math.cos(earthAngle);
-        earthRef.current.position.z = semiMinor * Math.sin(earthAngle);
-        earthRef.current.rotation.y += 0.005;
-        cloudsRef.current.rotation.y += 0.003;
+        if (planetRef.current) {
+            const moonAngle = animationTimeRef.current * speed;
+            moonRef.current.position.x = planetRef.current.position.x + orbitRadius * Math.cos(moonAngle);
+            moonRef.current.position.z = planetRef.current.position.z + orbitRadius * Math.sin(moonAngle);
+        }
+    });
 
-        const moonAngle = animationTimeRef.current * moonSpeed;
-        moonRef.current.position.x = earthRef.current.position.x + moonOrbitRadius * Math.cos(moonAngle);
-        moonRef.current.position.z = earthRef.current.position.z + moonOrbitRadius * Math.sin(moonAngle);
+    return (
+        <mesh
+            ref={moonRef}
+            onPointerOver={(e) => { e.stopPropagation(); setIsMoonHovered(true); onHover(true); }}
+            onPointerOut={(e) => { e.stopPropagation(); setIsMoonHovered(false); onHover(false); }}
+            onClick={(e) => { e.stopPropagation(); navigate(`/planet/${moonData.id}`); }}
+        >
+            <sphereGeometry args={[moonData.size, 32, 32]} />
+            <meshStandardMaterial color={moonColors[moonData.id]} emissiveIntensity={isMoonHovered ? 0.2 : 0} emissive="white" />
+            {isMoonHovered && <Html><div className="planet-label">{moonData.name}</div></Html>}
+        </mesh>
+    );
+}
+
+function PlanetWithMoons({ planetData, semiMajor, semiMinor, speed, moons, isPaused, speedMultiplier }) {
+    const planetRef = useRef();
+    const navigate = useNavigate();
+    const [isPlanetHovered, setIsPlanetHovered] = useState(false);
+    const [isMoonHovered, setIsMoonHovered] = useState(false);
+    const animationTimeRef = useRef(0);
+    const planetTexture = useTexture(textureUrls[planetData.id]);
+
+    useFrame((state, delta) => {
+        if (isPaused) return;
+        if (!isPlanetHovered && !isMoonHovered) {
+            animationTimeRef.current += delta * speedMultiplier;
+        }
+        const planetAngle = animationTimeRef.current * speed;
+        planetRef.current.position.x = semiMajor * Math.cos(planetAngle);
+        planetRef.current.position.z = semiMinor * Math.sin(planetAngle);
+        planetRef.current.rotation.y += 0.005 * speedMultiplier;
     });
 
     return (
         <group>
             <Orbit semiMajor={semiMajor} semiMinor={semiMinor} />
             <group
-                onPointerOver={(e) => { e.stopPropagation(); setIsEarthHovered(true); }}
-                onPointerOut={(e) => { e.stopPropagation(); setIsEarthHovered(false); }}
+                onPointerOver={(e) => { e.stopPropagation(); setIsPlanetHovered(true); }}
+                onPointerOut={(e) => { e.stopPropagation(); setIsPlanetHovered(false); }}
                 onClick={(e) => { e.stopPropagation(); navigate(`/planet/${planetData.id}`); }}
             >
-                <mesh ref={earthRef} castShadow>
+                <mesh ref={planetRef} castShadow>
                     <sphereGeometry args={[planetData.size, 32, 32]} />
-                    <meshStandardMaterial map={earthTexture} emissiveIntensity={isEarthHovered ? 0.5 : 0} emissive="white" />
+                    <meshStandardMaterial map={planetTexture} emissiveIntensity={isPlanetHovered ? 0.5 : 0} emissive="white" />
                 </mesh>
-                <mesh ref={cloudsRef} castShadow>
-                    <sphereGeometry args={[planetData.size * 1.01, 32, 32]} />
-                    <meshStandardMaterial map={cloudsTexture} transparent opacity={0.4} />
-                </mesh>
-                {isEarthHovered && <Html position={earthRef.current?.position}><div className="planet-label">{planetData.name}</div></Html>}
+                {isPlanetHovered && <Html position={planetRef.current?.position}><div className="planet-label">{planetData.name}</div></Html>}
             </group>
-            <mesh
-                ref={moonRef}
-                onPointerOver={(e) => { e.stopPropagation(); setIsMoonHovered(true); }}
-                onPointerOut={(e) => { e.stopPropagation(); setIsMoonHovered(false); }}
-                onClick={(e) => { e.stopPropagation(); navigate(`/planet/moon`); }}
-            >
-                <sphereGeometry args={[planetData.size * 0.27, 32, 32]} />
-                <meshStandardMaterial map={moonTexture} emissiveIntensity={isMoonHovered ? 0.2 : 0} emissive="white" />
-                {isMoonHovered && <Html><div className="planet-label">{moonData.name}</div></Html>}
-            </mesh>
+            {moons.map((moon, index) => (
+                <Moon
+                    key={moon.id}
+                    moonData={moon}
+                    planetRef={planetRef}
+                    orbitRadius={planetData.size + 2 + index * 2}
+                    speed={1 / (index + 1)}
+                    isPaused={isPaused}
+                    speedMultiplier={speedMultiplier}
+                    onHover={setIsMoonHovered}
+                />
+            ))}
         </group>
     );
 }
 
 // Saturn Component with Rings
-function Saturn({ planetData, semiMajor, semiMinor, speed }) {
+function Saturn({ planetData, semiMajor, semiMinor, speed, isPaused, speedMultiplier }) {
     const groupRef = useRef();
     const ringRef = useRef();
     const navigate = useNavigate();
@@ -142,13 +181,14 @@ function Saturn({ planetData, semiMajor, semiMinor, speed }) {
     const [planetTexture, ringTexture] = useTexture([textureUrls.saturn, textureUrls.saturnRing]);
 
     useFrame((state, delta) => {
+        if (isPaused) return;
         if (!isHovered) {
-            animationTimeRef.current += delta;
+            animationTimeRef.current += delta * speedMultiplier;
         }
         const angle = animationTimeRef.current * speed;
         groupRef.current.position.x = semiMajor * Math.cos(angle);
         groupRef.current.position.z = semiMinor * Math.sin(angle);
-        groupRef.current.rotation.y += 0.005;
+        groupRef.current.rotation.y += 0.005 * speedMultiplier;
     });
 
     return (
@@ -175,7 +215,7 @@ function Saturn({ planetData, semiMajor, semiMinor, speed }) {
 }
 
 // Asteroid Belt Component
-function AsteroidBelt() {
+function AsteroidBelt({ isPaused, speedMultiplier }) {
     const meshRef = useRef();
     const navigate = useNavigate();
     const [isHovered, setIsHovered] = useState(false);
@@ -201,8 +241,9 @@ function AsteroidBelt() {
     }, []);
 
     useFrame((state, delta) => {
+        if (isPaused || isHovered) return;
         particles.forEach((particle, i) => {
-            particle.t += particle.speed * delta;
+            particle.t += particle.speed * delta * speedMultiplier;
             const x = particle.r * Math.cos(particle.t);
             const z = particle.r * Math.sin(particle.t);
             dummy.position.set(x, particle.y, z);
@@ -273,11 +314,26 @@ function Sun() {
 }
 
 // Meteor Component
-function Meteor() {
+function Meteor({ isPaused, speedMultiplier }) {
     const meteorRef = useRef();
     const navigate = useNavigate();
     const [isHovered, setIsHovered] = useState(false);
     const meteorData = solarSystemData.planets.find(p => p.id === 'meteor');
+
+    const starShape = useMemo(() => {
+        const shape = new THREE.Shape();
+        const outerRadius = 3;
+        const innerRadius = 1.4;
+        const points = 5;
+        shape.moveTo(0, outerRadius);
+        for (let i = 0; i < points * 2; i++) {
+            const radius = i % 2 === 0 ? outerRadius : innerRadius;
+            const angle = (i / (points * 2)) * Math.PI * 2;
+            shape.lineTo(Math.sin(angle) * radius, Math.cos(angle) * radius);
+        }
+        shape.closePath();
+        return shape;
+    }, []);
 
     // Set initial position to top-left
     const initialPos = useMemo(() => new THREE.Vector3(-50, 30, 0), []);
@@ -288,9 +344,10 @@ function Meteor() {
     const currentPosition = useRef(initialPos.clone());
 
     useFrame((state, delta) => {
+        if (isPaused) return;
         if (meteorRef.current && !isHovered) {
             // Move the meteor
-            currentPosition.current.add(velocity.clone().multiplyScalar(delta * 60));
+            currentPosition.current.add(velocity.clone().multiplyScalar(delta * 60 * speedMultiplier));
 
             // Reset meteor when it goes off-screen
             if (currentPosition.current.x > 80 || currentPosition.current.y < -40) {
@@ -310,7 +367,7 @@ function Meteor() {
         >
             {/* Head */}
             <mesh>
-                <sphereGeometry args={[1.2, 16, 16]} />
+                <shapeGeometry args={[starShape]} />
                 <meshBasicMaterial color="white" />
             </mesh>
             {/* Tail */}
@@ -333,6 +390,10 @@ function Meteor() {
 
 // Main Universe Page Component
 function UniversePage() {
+  const [isPaused, setIsPaused] = useState(false);
+  const [speedMultiplier, setSpeedMultiplier] = useState(1);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const planetsWith3DData = solarSystemData.planets.map(p => {
       const eccentricity = 0.98;
       const sizeFactor = 2.5;
@@ -346,43 +407,104 @@ function UniversePage() {
           case 'saturn': return {...p, size: 1 * sizeFactor, semiMajor: 30, semiMinor: 30 * eccentricity, speed: 0.1 };
           case 'uranus': return {...p, size: 0.8 * sizeFactor, semiMajor: 37, semiMinor: 37 * eccentricity, speed: 0.05 };
           case 'neptune': return {...p, size: 0.75 * sizeFactor, semiMajor: 43, semiMinor: 43 * eccentricity, speed: 0.03 };
+          case 'pluto': return {...p, size: 0.1 * sizeFactor, semiMajor: 48, semiMinor: 48 * eccentricity, speed: 0.02 };
+          case 'moon': return {...p, size: p.size * sizeFactor };
+          case 'io': return {...p, size: 0.15 * sizeFactor, semiMajor: 0, semiMinor: 0, speed: 0 }; // Moon
+          case 'europa': return {...p, size: 0.13 * sizeFactor, semiMajor: 0, semiMinor: 0, speed: 0 }; // Moon
+          case 'ganymede': return {...p, size: 0.2 * sizeFactor, semiMajor: 0, semiMinor: 0, speed: 0 }; // Moon
+          case 'callisto': return {...p, size: 0.18 * sizeFactor, semiMajor: 0, semiMinor: 0, speed: 0 }; // Moon
+          case 'titan': return {...p, size: 0.2 * sizeFactor, semiMajor: 0, semiMinor: 0, speed: 0 }; // Moon
+          case 'enceladus': return {...p, size: 0.05 * sizeFactor, semiMajor: 0, semiMinor: 0, speed: 0 }; // Moon
           case 'meteor': return {...p, size: 0.1 * sizeFactor, semiMajor: 0, semiMinor: 0, speed: 0 }; // Not orbiting
           default: return p;
       }
   });
 
-  const orbitingPlanets = planetsWith3DData.filter(p => p.id !== 'sun' && p.id !== 'moon' && p.id !== 'asteroid-belt' && p.id !== 'meteor');
+  const orbitingPlanets = planetsWith3DData.filter(p => p.semiMajor > 0);
+  const moons = {
+      earth: planetsWith3DData.filter(p => p.id === 'moon'),
+  }
+
+  const menuIconStyle = {
+    position: 'absolute',
+    top: '0px',
+    left: '0px',
+    padding: '10px',
+    zIndex: 10,
+    cursor: 'pointer',
+    color: 'white',
+    fontSize: '24px'
+  };
 
   return (
     <div style={{ position: 'relative', minHeight: '100vh', overflow: 'auto' }}>
-        <div style={{ height: '50vh', width: '100vw', position: 'relative', zIndex: 0 }}>
+        <div style={menuIconStyle} onClick={() => setIsMenuOpen(true)}>
+            ☰
+        </div>
+        <SolarSystemMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+
+        <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 10, backgroundColor: 'rgba(0,0,0,0.5)', padding: '15px', borderRadius: '10px', color: 'white', width: '200px' }}>
+            <h5 style={{textAlign: 'center'}}>動畫控制</h5>
+            <Button variant="outline-light" size="sm" onClick={() => setIsPaused(!isPaused)} className="mb-2 w-100">
+                {isPaused ? '繼續動畫' : '暫停動畫'}
+            </Button>
+            <Form.Label>旋轉速度</Form.Label>
+            <Form.Range
+                min="0"
+                max="5"
+                step="0.1"
+                value={speedMultiplier}
+                onChange={e => setSpeedMultiplier(parseFloat(e.target.value))}
+            />
+        </div>
+        <div style={{ height: '60vh', width: '100vw', position: 'relative', zIndex: 0 }}>
             <Suspense fallback={<div style={{color: 'white', textAlign: 'center'}}>載入中...</div>}>
                 <Canvas camera={{ position: [0, 45, 70], fov: 45 }} shadows>
                     <ambientLight intensity={0.2} />
                     <pointLight color="#ffffff" position={[0, 0, 0]} intensity={2.5} castShadow />
                     <Stars radius={300} depth={60} count={5000} factor={10} saturation={0} fade speed={1} />
 
-                    <group rotation-x={-Math.PI / 8} position={[-40, 0, 0]} scale={2.2}>
+                    <group rotation-x={-Math.PI / 8} position={[-20, 0, 0]} scale={1.8}>
                         <Sun />
-                        <AsteroidBelt />
+                        <AsteroidBelt isPaused={isPaused} speedMultiplier={speedMultiplier} />
                         {orbitingPlanets.map(planet => {
-                            if (planet.id === 'earth') {
-                                return <Earth
-                                    key={planet.id}
-                                    planetData={planet}
-                                    semiMajor={planet.semiMajor}
-                                    semiMinor={planet.semiMinor}
-                                    speed={planet.speed}
-                                />;
-                            } else if (planet.id === 'saturn') {
+                            if (planet.id === 'saturn') {
                                 return <Saturn
                                     key={planet.id}
                                     planetData={planet}
                                     semiMajor={planet.semiMajor}
                                     semiMinor={planet.semiMinor}
                                     speed={planet.speed}
+                                    isPaused={isPaused}
+                                    speedMultiplier={speedMultiplier}
                                 />;
                             }
+                            if (moons[planet.id]) {
+                                return <PlanetWithMoons
+                                    key={planet.id}
+                                    planetData={planet}
+                                    semiMajor={planet.semiMajor}
+                                    semiMinor={planet.semiMinor}
+                                    speed={planet.speed}
+                                    moons={moons[planet.id]}
+                                    moonsAreAnimated={planet.id !== 'jupiter'}
+                                    isPaused={isPaused}
+                                    speedMultiplier={speedMultiplier}
+                                />;
+                            }
+                            if (planet.id === 'pluto') {
+                                return <Planet
+                                    key={planet.id}
+                                    planetData={planet}
+                                    semiMajor={planet.semiMajor}
+                                    semiMinor={planet.semiMinor}
+                                    speed={planet.speed}
+                                    color={planetColors[planet.id]}
+                                    isPaused={isPaused}
+                                    speedMultiplier={speedMultiplier}
+                                />;
+                            }
+                            
                             return <Planet
                                 key={planet.id}
                                 planetData={planet}
@@ -390,10 +512,12 @@ function UniversePage() {
                                 semiMinor={planet.semiMinor}
                                 speed={planet.speed}
                                 textureUrl={textureUrls[planet.id]}
+                                isPaused={isPaused}
+                                speedMultiplier={speedMultiplier}
                             />;
                         })}
                     </group>
-                    <Meteor />
+                    <Meteor isPaused={isPaused} speedMultiplier={speedMultiplier} />
                     <OrbitControls enablePan={true} enableZoom={false} enableRotate={false} minDistance={20} maxDistance={150} maxPolarAngle={Math.PI / 2.1} />
                 </Canvas>
             </Suspense>

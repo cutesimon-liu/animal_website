@@ -55,7 +55,6 @@ function App() {
       <ThemeLayout>
         <NavigationBar counts={counts} />
         <main>
-          <Container className="mt-4">
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/animals" element={<HomePage />} />
@@ -66,9 +65,7 @@ function App() {
               <Route path="/gomoku" element={<Gomoku />} />
               <Route path="/xiangqi" element={<Xiangqi />} />
               <Route path="/universe-knowledge/:id" element={<UniverseKnowledgeDetailPage />} />
-              
             </Routes>
-          </Container>
         </main>
       </ThemeLayout>
     </Router>
