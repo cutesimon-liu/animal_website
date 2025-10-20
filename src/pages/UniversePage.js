@@ -1,5 +1,5 @@
 import React, { useRef, Suspense, useState, useMemo } from 'react';
-import { useNavigate, Link, BrowserRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Stars, OrbitControls, Html, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
