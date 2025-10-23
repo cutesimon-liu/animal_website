@@ -16,6 +16,7 @@ function NavigationBar({ counts }) {
               <NavDropdown.Item as={Link} to="/tictactoe">井字遊戲</NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/gomoku">五子棋</NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/xiangqi">象棋</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/game2048">2048</NavDropdown.Item>
             </NavDropdown>
           </Nav>
           <Nav className="ms-auto">

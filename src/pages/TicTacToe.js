@@ -82,7 +82,6 @@ const TicTacToe = ({ gameMode, resetSignal }) => {
               {board.map((_, i) => renderSquare(i))}
             </div>
         </div>
-         <button className="reset-button" onClick={resetGame}>重新開始</button>
     </div>
   );
 };

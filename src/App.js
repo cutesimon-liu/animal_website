@@ -11,6 +11,7 @@ import Xiangqi from './pages/Xiangqi';
 import UniversePage from './pages/UniversePage';
 import PlanetDetailPage from './pages/PlanetDetailPage';
 import UniverseKnowledgeDetailPage from './pages/UniverseKnowledgeDetailPage';
+import Game2048 from './pages/Game2048';
 
 
 const ThemeLayout = ({ children }) => {
@@ -22,7 +23,7 @@ const ThemeLayout = ({ children }) => {
       document.body.className = 'first-bg';
     } else if (path.startsWith('/universe') || path.startsWith('/planet')) {
       document.body.className = 'universe-bg';
-    } else if (path.startsWith('/tictactoe') || path.startsWith('/gomoku') || path.startsWith('/xiangqi')) {
+    } else if (path.startsWith('/tictactoe') || path.startsWith('/gomoku') || path.startsWith('/xiangqi') || path.startsWith('/game2048')) {
       document.body.className = 'game-bg';
     } else if (path.startsWith('/animal') || path.startsWith('/animals')) {
       document.body.className = 'animal-bg';
@@ -64,6 +65,7 @@ function App() {
               <Route path="/tictactoe" element={<TicTacToe />} />
               <Route path="/gomoku" element={<Gomoku />} />
               <Route path="/xiangqi" element={<Xiangqi />} />
+              <Route path="/game2048" element={<Game2048 />} />
               <Route path="/universe-knowledge/:id" element={<UniverseKnowledgeDetailPage />} />
             </Routes>
         </main>
