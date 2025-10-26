@@ -12,6 +12,7 @@ import UniversePage from './pages/UniversePage';
 import PlanetDetailPage from './pages/PlanetDetailPage';
 import UniverseKnowledgeDetailPage from './pages/UniverseKnowledgeDetailPage';
 import Game2048 from './pages/Game2048';
+import ConstellationPage from './pages/ConstellationPage';
 
 
 const ThemeLayout = ({ children }) => {
@@ -67,6 +68,7 @@ function App() {
               <Route path="/xiangqi" element={<Xiangqi />} />
               <Route path="/game2048" element={<Game2048 />} />
               <Route path="/universe-knowledge/:id" element={<UniverseKnowledgeDetailPage />} />
+              <Route path="/constellation/:id" element={<ConstellationPage />} />
             </Routes>
         </main>
       </ThemeLayout>

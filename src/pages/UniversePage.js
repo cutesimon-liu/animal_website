@@ -7,6 +7,8 @@ import { solarSystemData } from '../data/planets';
 import universeKnowledge from '../data/universeKnowledge';
 import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap';
 import SolarSystemMenu from '../components/SolarSystemMenu';
+import ConstellationMenu from '../components/ConstellationMenu';
+import ConstellationCanvas from '../components/ConstellationCanvas';
 
 // Texture URLs
 const textureUrls = {
@@ -393,6 +395,7 @@ function UniversePage() {
   const [isPaused, setIsPaused] = useState(false);
   const [speedMultiplier, setSpeedMultiplier] = useState(1);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeCanvas, setActiveCanvas] = useState('solarSystem');
 
   const planetsWith3DData = solarSystemData.planets.map(p => {
       const eccentricity = 0.98;
@@ -441,87 +444,109 @@ function UniversePage() {
         <div style={menuIconStyle} onClick={() => setIsMenuOpen(true)}>
             ☰
         </div>
-        <SolarSystemMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+        {activeCanvas === 'constellations' ? (
+            <ConstellationMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+        ) : (
+            <SolarSystemMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+        )}
 
-        <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 10, backgroundColor: 'rgba(0,0,0,0.5)', padding: '15px', borderRadius: '10px', color: 'white', width: '200px' }}>
-            <h5 style={{textAlign: 'center'}}>動畫控制</h5>
-            <Button variant="outline-light" size="sm" onClick={() => setIsPaused(!isPaused)} className="mb-2 w-100">
-                {isPaused ? '繼續動畫' : '暫停動畫'}
-            </Button>
-            <Form.Label>旋轉速度</Form.Label>
-            <Form.Range
-                min="0"
-                max="5"
-                step="0.1"
-                value={speedMultiplier}
-                onChange={e => setSpeedMultiplier(parseFloat(e.target.value))}
-            />
+        <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 10, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ backgroundColor: 'rgba(0,0,0,0.5)', padding: '15px', borderRadius: '10px', color: 'white', width: '200px' }}>
+                <h5 style={{textAlign: 'center'}}>場景切換</h5>
+                <Button variant={activeCanvas === 'solarSystem' ? 'light' : 'outline-light'} size="sm" onClick={() => setActiveCanvas('solarSystem')} className="mb-2 w-100">
+                    太陽系
+                </Button>
+                <Button variant={activeCanvas === 'constellations' ? 'light' : 'outline-light'} size="sm" onClick={() => setActiveCanvas('constellations')} className="w-100">
+                    星座
+                </Button>
+            </div>
+            {activeCanvas === 'solarSystem' && (
+                <div style={{ backgroundColor: 'rgba(0,0,0,0.5)', padding: '15px', borderRadius: '10px', color: 'white', width: '200px' }}>
+                    <h5 style={{textAlign: 'center'}}>動畫控制</h5>
+                    <Button variant="outline-light" size="sm" onClick={() => setIsPaused(!isPaused)} className="mb-2 w-100">
+                        {isPaused ? '繼續動畫' : '暫停動畫'}
+                    </Button>
+                    <Form.Label>旋轉速度</Form.Label>
+                    <Form.Range
+                        min="0"
+                        max="5"
+                        step="0.1"
+                        value={speedMultiplier}
+                        onChange={e => setSpeedMultiplier(parseFloat(e.target.value))}
+                    />
+                </div>
+            )}
         </div>
-        <div style={{ height: '60vh', width: '100vw', position: 'relative', zIndex: 0 }}>
-            <Suspense fallback={<div style={{color: 'white', textAlign: 'center'}}>載入中...</div>}>
-                <Canvas camera={{ position: [0, 45, 70], fov: 45 }} shadows>
-                    <ambientLight intensity={0.2} />
-                    <pointLight color="#ffffff" position={[0, 0, 0]} intensity={2.5} castShadow />
-                    <Stars radius={300} depth={60} count={5000} factor={10} saturation={0} fade speed={1} />
 
-                    <group rotation-x={-Math.PI / 8} position={[-20, 0, 0]} scale={1.8}>
-                        <Sun />
-                        <AsteroidBelt isPaused={isPaused} speedMultiplier={speedMultiplier} />
-                        {orbitingPlanets.map(planet => {
-                            if (planet.id === 'saturn') {
-                                return <Saturn
-                                    key={planet.id}
-                                    planetData={planet}
-                                    semiMajor={planet.semiMajor}
-                                    semiMinor={planet.semiMinor}
-                                    speed={planet.speed}
-                                    isPaused={isPaused}
-                                    speedMultiplier={speedMultiplier}
-                                />;
-                            }
-                            if (moons[planet.id]) {
-                                return <PlanetWithMoons
-                                    key={planet.id}
-                                    planetData={planet}
-                                    semiMajor={planet.semiMajor}
-                                    semiMinor={planet.semiMinor}
-                                    speed={planet.speed}
-                                    moons={moons[planet.id]}
-                                    moonsAreAnimated={planet.id !== 'jupiter'}
-                                    isPaused={isPaused}
-                                    speedMultiplier={speedMultiplier}
-                                />;
-                            }
-                            if (planet.id === 'pluto') {
+        {activeCanvas === 'solarSystem' ? (
+            <div style={{ height: '60vh', width: '100vw', position: 'relative', zIndex: 0 }}>
+                <Suspense fallback={<div style={{color: 'white', textAlign: 'center'}}>載入中...</div>}>
+                    <Canvas camera={{ position: [0, 45, 70], fov: 45 }} shadows>
+                        <ambientLight intensity={0.2} />
+                        <pointLight color="#ffffff" position={[0, 0, 0]} intensity={2.5} castShadow />
+                        <Stars radius={300} depth={60} count={5000} factor={10} saturation={0} fade speed={1} />
+
+                        <group rotation-x={-Math.PI / 8} position={[-20, 0, 0]} scale={1.8}>
+                            <Sun />
+                            <AsteroidBelt isPaused={isPaused} speedMultiplier={speedMultiplier} />
+                            {orbitingPlanets.map(planet => {
+                                if (planet.id === 'saturn') {
+                                    return <Saturn
+                                        key={planet.id}
+                                        planetData={planet}
+                                        semiMajor={planet.semiMajor}
+                                        semiMinor={planet.semiMinor}
+                                        speed={planet.speed}
+                                        isPaused={isPaused}
+                                        speedMultiplier={speedMultiplier}
+                                    />;
+                                }
+                                if (moons[planet.id]) {
+                                    return <PlanetWithMoons
+                                        key={planet.id}
+                                        planetData={planet}
+                                        semiMajor={planet.semiMajor}
+                                        semiMinor={planet.semiMinor}
+                                        speed={planet.speed}
+                                        moons={moons[planet.id]}
+                                        moonsAreAnimated={planet.id !== 'jupiter'}
+                                        isPaused={isPaused}
+                                        speedMultiplier={speedMultiplier}
+                                    />;
+                                }
+                                if (planet.id === 'pluto') {
+                                    return <Planet
+                                        key={planet.id}
+                                        planetData={planet}
+                                        semiMajor={planet.semiMajor}
+                                        semiMinor={planet.semiMinor}
+                                        speed={planet.speed}
+                                        color={planetColors[planet.id]}
+                                        isPaused={isPaused}
+                                        speedMultiplier={speedMultiplier}
+                                    />;
+                                }
+                                
                                 return <Planet
                                     key={planet.id}
                                     planetData={planet}
                                     semiMajor={planet.semiMajor}
                                     semiMinor={planet.semiMinor}
                                     speed={planet.speed}
-                                    color={planetColors[planet.id]}
+                                    textureUrl={textureUrls[planet.id]}
                                     isPaused={isPaused}
                                     speedMultiplier={speedMultiplier}
                                 />;
-                            }
-                            
-                            return <Planet
-                                key={planet.id}
-                                planetData={planet}
-                                semiMajor={planet.semiMajor}
-                                semiMinor={planet.semiMinor}
-                                speed={planet.speed}
-                                textureUrl={textureUrls[planet.id]}
-                                isPaused={isPaused}
-                                speedMultiplier={speedMultiplier}
-                            />;
-                        })}
-                    </group>
-                    <Meteor isPaused={isPaused} speedMultiplier={speedMultiplier} />
-                    <OrbitControls enablePan={true} enableZoom={false} enableRotate={false} minDistance={20} maxDistance={150} maxPolarAngle={Math.PI / 2.1} />
-                </Canvas>
-            </Suspense>
-        </div>
+                            })}
+                        </group>
+                        <Meteor isPaused={isPaused} speedMultiplier={speedMultiplier} />
+                        <OrbitControls enablePan={true} enableZoom={false} enableRotate={false} minDistance={20} maxDistance={150} maxPolarAngle={Math.PI / 2.1} />
+                    </Canvas>
+                </Suspense>
+            </div>
+        ) : (
+            <ConstellationCanvas />
+        )}
 
         <div style={{ position: 'relative', zIndex: 1, minHeight: '50vh', padding: '20px 0' }}>
             <Container className="py-5">
