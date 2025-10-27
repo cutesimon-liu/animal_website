@@ -1,10 +1,11 @@
-import React, { useRef, Suspense, useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useRef, Suspense, useState, useMemo, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Stars, OrbitControls, Html, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import { solarSystemData } from '../data/planets';
 import universeKnowledge from '../data/universeKnowledge';
+import constellationKnowledge from '../data/constellationKnowledge';
 import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap';
 import SolarSystemMenu from '../components/SolarSystemMenu';
 import ConstellationMenu from '../components/ConstellationMenu';
@@ -392,10 +393,23 @@ function Meteor({ isPaused, speedMultiplier }) {
 
 // Main Universe Page Component
 function UniversePage() {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const initialActiveCanvas = queryParams.get('view') === 'constellations' ? 'constellations' : 'solarSystem';
+
   const [isPaused, setIsPaused] = useState(false);
   const [speedMultiplier, setSpeedMultiplier] = useState(1);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeCanvas, setActiveCanvas] = useState('solarSystem');
+  const [activeCanvas, setActiveCanvas] = useState(initialActiveCanvas);
+  const [knowledgeData, setKnowledgeData] = useState(universeKnowledge);
+
+  useEffect(() => {
+    if (activeCanvas === 'solarSystem') {
+      setKnowledgeData(universeKnowledge);
+    } else if (activeCanvas === 'constellations') {
+      setKnowledgeData(constellationKnowledge);
+    }
+  }, [activeCanvas]);
 
   const planetsWith3DData = solarSystemData.planets.map(p => {
       const eccentricity = 0.98;
@@ -551,13 +565,16 @@ function UniversePage() {
         <div style={{ position: 'relative', zIndex: 1, minHeight: '50vh', padding: '20px 0' }}>
             <Container className="py-5">
                 <Row className="g-4 justify-content-center">
-                    {universeKnowledge.map((item) => (
+                    {knowledgeData.map((item) => (
                         <Col md={6} lg={4} key={item.id}>
                             <Card className="h-100 text-white" style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(5px)' }}>
                                 <Card.Body>
                                     <Card.Title>{item.title}</Card.Title>
                                     <Card.Text>{item.shortDescription}</Card.Text>
-                                    <button onClick={() => window.location.href = `/universe-knowledge/${item.id}`} className="btn btn-outline-light">了解更多</button>
+                                    <button onClick={() => {
+                                        const path = activeCanvas === 'solarSystem' ? `/universe-knowledge/${item.id}` : `/constellation-knowledge/${item.id}`;
+                                        window.location.href = path;
+                                    }} className="btn btn-outline-light">了解更多</button>
                                 </Card.Body>
                             </Card>
                         </Col>

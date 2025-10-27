@@ -13,6 +13,7 @@ import PlanetDetailPage from './pages/PlanetDetailPage';
 import UniverseKnowledgeDetailPage from './pages/UniverseKnowledgeDetailPage';
 import Game2048 from './pages/Game2048';
 import ConstellationPage from './pages/ConstellationPage';
+import ConstellationKnowledgeDetailPage from './pages/ConstellationKnowledgeDetailPage';
 
 
 const ThemeLayout = ({ children }) => {
@@ -22,7 +23,7 @@ const ThemeLayout = ({ children }) => {
     const path = location.pathname;
     if (path === '/') {
       document.body.className = 'first-bg';
-    } else if (path.startsWith('/universe') || path.startsWith('/planet')) {
+    } else if (path.startsWith('/universe') || path.startsWith('/planet') || path.startsWith('/constellation-knowledge')) {
       document.body.className = 'universe-bg';
     } else if (path.startsWith('/tictactoe') || path.startsWith('/gomoku') || path.startsWith('/xiangqi') || path.startsWith('/game2048')) {
       document.body.className = 'game-bg';
@@ -69,6 +70,7 @@ function App() {
               <Route path="/game2048" element={<Game2048 />} />
               <Route path="/universe-knowledge/:id" element={<UniverseKnowledgeDetailPage />} />
               <Route path="/constellation/:id" element={<ConstellationPage />} />
+              <Route path="/constellation-knowledge/:id" element={<ConstellationKnowledgeDetailPage />} />
             </Routes>
         </main>
       </ThemeLayout>

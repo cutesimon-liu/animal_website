@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Container, Card } from 'react-bootstrap';
-import universeKnowledge from '../data/universeKnowledge';
+import constellationKnowledge from '../data/constellationKnowledge';
 
-function UniverseKnowledgeDetailPage() {
+function ConstellationKnowledgeDetailPage() {
   const { id } = useParams();
-  const knowledgeItem = universeKnowledge.find(item => item.id === id);
+  const knowledgeItem = constellationKnowledge.find(item => item.id === id);
 
   const [tapeStyles, setTapeStyles] = useState([]);
 
@@ -53,7 +53,7 @@ function UniverseKnowledgeDetailPage() {
         <Card style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}>
           <Card.Body>
             <Card.Title>知識項目不存在</Card.Title>
-            <Card.Text>找不到您要尋找的宇宙知識。</Card.Text>
+            <Card.Text>找不到您要尋找的星座知識。</Card.Text>
             <Link to="/universe" className="btn btn-primary">返回宇宙頁面</Link>
           </Card.Body>
         </Card>
@@ -87,7 +87,7 @@ function UniverseKnowledgeDetailPage() {
                 <strong style={{ color: 'black' }}>資料來源:</strong> <a href={knowledgeItem.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'black' }}>{knowledgeItem.sourceName}</a>
               </Card.Text>
             )}
-            <Link to="/universe" className="btn btn-secondary">返回宇宙頁面</Link>
+            <Link to="/universe?view=constellations" className="btn btn-secondary">返回星座頁面</Link>
           </Card.Body>
         </Card>
       </div>
@@ -95,4 +95,4 @@ function UniverseKnowledgeDetailPage() {
   );
 }
 
-export default UniverseKnowledgeDetailPage;
+export default ConstellationKnowledgeDetailPage;

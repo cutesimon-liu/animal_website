@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Noto+Sans+TC:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Noto+Sans+TC:wght@400;700&family=Caveat:wght@400;700&display=swap');
 
 body {
   margin: 0;
@@ -244,3 +244,32 @@ h1, h2, h3, h4, h5, h6 {
   transition: opacity 0.3s ease;
 }
 
+.sticky-note-container {
+  position: relative;
+  margin: 40px auto; /* Adjust margin as needed */
+  width: fit-content;
+}
+
+.sticky-note-container::before {
+  content: '';
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%) rotate(5deg);
+  width: 100px;
+  height: 30px;
+  background-color: rgba(173, 216, 230, 0.7); /* Light blue tape */
+  border-radius: 3px;
+  z-index: 10;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.tape-decoration {
+  position: absolute;
+  width: 80px;
+  height: 25px;
+  background-color: rgba(255, 204, 153, 0.7); /* Light orange tape */
+  border-radius: 3px;
+  z-index: 10;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
