@@ -61,97 +61,32 @@ function CameraFacingGroup({ children, ...props }) {
 }
 
 // This new component contains all the R3F logic and is rendered inside the Canvas
-function SceneContent({ targetIndex, setDisplayIndex, setIsPaused, numConstellations }) {
+function SceneContent({ targetIndex, setDisplayIndex, numConstellations }) {
   const groupRef = useRef();
-  const isPausedRef = useRef(true);
-  const pauseTimer = useRef(0);
-  const cooldownTimer = useRef(0);
-  const isCoolingDown = useRef(false);
-  const PAUSE_DURATION = 3;
-  const COOLDOWN_DURATION = 2; // 2 seconds to move away from the front
 
   useFrame((state, delta) => {
     if (!groupRef.current) return;
 
-    if (numConstellations <= 1) {
-      // --- LOGIC FOR SINGLE CONSTELLATION ---
-      if (isCoolingDown.current) {
-        // In cooldown, just rotate and count down
-        groupRef.current.rotation.y += delta * 0.2;
-        cooldownTimer.current += delta;
-        if (cooldownTimer.current >= COOLDOWN_DURATION) {
-          isCoolingDown.current = false;
-          cooldownTimer.current = 0;
-        }
-        return; // Skip the rest of the logic
-      }
+    const anglePerConstellation = (2 * Math.PI) / numConstellations;
+    const initialAngleForTarget = targetIndex * anglePerConstellation;
+    const targetRotation = (-Math.PI / 2) + initialAngleForTarget;
 
-      if (!isPausedRef.current) {
-        groupRef.current.rotation.y += delta * 0.2;
-      }
-
-      const rotationY = groupRef.current.rotation.y % (2 * Math.PI);
-      const targetFront = -Math.PI / 2;
-      let diff = Math.abs(rotationY - targetFront);
-      if (diff > Math.PI) diff = 2 * Math.PI - diff;
-
-      if (diff < 0.05 && !isPausedRef.current) {
-        isPausedRef.current = true;
-        setIsPaused(true);
-        setDisplayIndex(0);
-        pauseTimer.current = 0;
-      }
-
-      if (isPausedRef.current) {
-        pauseTimer.current += delta;
-        if (pauseTimer.current >= PAUSE_DURATION) {
-          isPausedRef.current = false;
-          setIsPaused(false);
-          isCoolingDown.current = true; // Start cooldown
-        }
-      }
-
-    } else {
-      // --- LOGIC FOR MULTIPLE CONSTELLATIONS (using robust LERP) ---
-      const anglePerConstellation = (2 * Math.PI) / numConstellations;
-      const initialAngleForTarget = targetIndex * anglePerConstellation;
-      const targetRotation = (-Math.PI / 2) + initialAngleForTarget;
-
-      // Use LERP for smooth and reliable rotation
-      let currentRotation = groupRef.current.rotation.y;
-      
-      // Handle the circular wrap-around for lerp
-      if (Math.abs(currentRotation - targetRotation) > Math.PI) {
-        if (currentRotation > targetRotation) {
-          currentRotation -= 2 * Math.PI;
-        } else {
-          currentRotation += 2 * Math.PI;
-        }
-      }
-      
-      const newRotation = THREE.MathUtils.lerp(currentRotation, targetRotation, 0.05);
-      groupRef.current.rotation.y = newRotation;
-
-      const hasArrived = Math.abs(newRotation - targetRotation) < 0.005;
-
-      if (hasArrived) {
-        groupRef.current.rotation.y = targetRotation; // Snap to final position
-        if (!isPausedRef.current) {
-          isPausedRef.current = true;
-          setIsPaused(true);
-          setDisplayIndex(targetIndex);
-          pauseTimer.current = 0;
-        }
-      }
-
-      if (isPausedRef.current) {
-        pauseTimer.current += delta;
-        if (pauseTimer.current >= PAUSE_DURATION) {
-          setIsPaused(false);
-          isPausedRef.current = false;
-        }
+    // Use LERP for smooth and reliable rotation
+    let currentRotation = groupRef.current.rotation.y;
+    
+    // Handle the circular wrap-around for lerp
+    if (Math.abs(currentRotation - targetRotation) > Math.PI) {
+      if (currentRotation > targetRotation) {
+        currentRotation -= 2 * Math.PI;
+      } else {
+        currentRotation += 2 * Math.PI;
       }
     }
+    
+    const newRotation = THREE.MathUtils.lerp(currentRotation, targetRotation, 0.05);
+    groupRef.current.rotation.y = newRotation;
+
+    const hasArrived = Math.abs(newRotation - targetRotation) < 0.005;
   });
 
   return (
@@ -180,21 +115,54 @@ function SceneContent({ targetIndex, setDisplayIndex, setIsPaused, numConstellat
 export default function ConstellationCanvas() {
   const [targetIndex, setTargetIndex] = useState(0);
   const [displayIndex, setDisplayIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(true);
+  const [isInteracting, setIsInteracting] = useState(false);
+  const interactionTimeoutRef = useRef(null);
 
-  // This effect now correctly handles the state transitions
   useEffect(() => {
-    // When the scene logic unpauses (signaling the end of a pause), 
-    // we immediately set the next target index. The useFrame loop will handle the rotation.
-    if (!isPaused) {
-      setTargetIndex(prevIndex => (prevIndex + 1) % constellationData.length);
+    if (!isInteracting) {
+      const interval = setInterval(() => {
+        setTargetIndex(prevIndex => {
+          const nextIndex = (prevIndex + 1) % constellationData.length;
+          setDisplayIndex(nextIndex);
+          return nextIndex;
+        });
+      }, 3000); // Change constellation every 3 seconds
+      return () => clearInterval(interval);
     }
-  }, [isPaused]);
+  }, [isInteracting]);
+
+  const handleInteraction = () => {
+    setIsInteracting(true);
+    clearTimeout(interactionTimeoutRef.current);
+    interactionTimeoutRef.current = setTimeout(() => {
+      setIsInteracting(false);
+    }, 5000); // 5 seconds of inactivity
+  };
+
+  const handleNext = () => {
+    handleInteraction();
+    setTargetIndex(prevIndex => {
+      const nextIndex = (prevIndex + 1) % constellationData.length;
+      setDisplayIndex(nextIndex);
+      return nextIndex;
+    });
+  };
+
+  const handlePrev = () => {
+    handleInteraction();
+    setTargetIndex(prevIndex => {
+      const prevIndexValue = (prevIndex - 1 + constellationData.length) % constellationData.length;
+      setDisplayIndex(prevIndexValue);
+      return prevIndexValue;
+    });
+  };
 
   const currentConstellation = constellationData[displayIndex];
 
   return (
     <div style={{ height: '60vh', width: '100vw', position: 'relative' }}>
+      <button onClick={handlePrev} style={{ position: 'absolute', left: '100px', top: '50%', zIndex: 2, background: 'none', border: 'none', color: 'white', fontSize: '3em' }}>&lt;</button>
+      <button onClick={handleNext} style={{ position: 'absolute', right: '100px', top: '50%', zIndex: 2, background: 'none', border: 'none', color: 'white', fontSize: '3em' }}>&gt;</button>
       <div style={{
         position: 'absolute',
         top: '85%',
@@ -203,7 +171,7 @@ export default function ConstellationCanvas() {
         zIndex: 1,
         textAlign: 'center',
         transition: 'opacity 0.5s ease-in-out',
-        opacity: isPaused ? 1 : 0,
+        opacity: 1,
       }}>
         <Link to={`/constellation/${currentConstellation?.id}`} style={{ textDecoration: 'none' }}>
           <div style={{
@@ -225,7 +193,6 @@ export default function ConstellationCanvas() {
           <SceneContent 
             targetIndex={targetIndex}
             setDisplayIndex={setDisplayIndex}
-            setIsPaused={setIsPaused}
             numConstellations={constellationData.length}
           />
         </Canvas>

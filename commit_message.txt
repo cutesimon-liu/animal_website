@@ -1,1 +1,0 @@
-feat: Enhance constellation pages with icons and astronomical data

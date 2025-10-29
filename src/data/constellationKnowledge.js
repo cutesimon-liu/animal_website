@@ -62,6 +62,33 @@ const constellationKnowledge = [
     sourceName: 'Ducksters',
     sourceUrl: 'https://www.ducksters.com/science/physics/constellations.php',
     imageUrl: 'https://i.imgur.com/9g4xR2g.jpeg'
+  },
+  {
+    id: 'history-of-constellations',
+    title: '星座的歷史',
+    shortDescription: '星座的起源可以追溯到數千年前的古文明。',
+    fullDescription: '古代文明，如巴比倫人、埃及人和希臘人，是最初將星星分組並賦予其意義的人。他們利用星座來追蹤時間、季節變化，並將其融入神話和宗教信仰中。許多我們今天所知的星座名稱和故事都源自古希臘文化。',
+    sourceName: '國家地理',
+    sourceUrl: 'https://www.nationalgeographic.com/science/article/constellations',
+    imageUrl: 'https://i.imgur.com/g1Y2X3Z.jpeg'
+  },
+  {
+    id: 'constellations-and-astrology',
+    title: '星座與占星術',
+    shortDescription: '占星術將星座與人類命運和性格聯繫起來。',
+    fullDescription: '占星術是一種古老的信仰體系，它認為天體的位置和運動會影響地球上的事件和人類的生活。每個黃道星座都與特定的性格特徵和命運預測相關聯。然而，現代科學並不認為占星術具有科學依據。',
+    sourceName: '占星術維基百科',
+    sourceUrl: 'https://zh.wikipedia.org/wiki/%E5%8D%A0%E6%98%9F%E8%A1%93',
+    imageUrl: 'https://i.imgur.com/h7Y8Z9W.jpeg'
+  },
+  {
+    id: 'constellation-observation',
+    title: '星座觀測',
+    shortDescription: '觀測星座需要黑暗的天空和對星圖的了解。',
+    fullDescription: '觀測星座的最佳條件是在遠離城市光害的黑暗地點。使用星圖或天文應用程式可以幫助識別不同的星座。雙筒望遠鏡或小型望遠鏡可以揭示星座中更暗淡的星星和深空天體，如星團和星雲。',
+    sourceName: '觀星指南',
+    sourceUrl: 'https://www.skyandtelescope.com/observing/stargazing-basics/',
+    imageUrl: 'https://i.imgur.com/k9X0L1P.jpeg'
   }
 ];
 
