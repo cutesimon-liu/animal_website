@@ -85,8 +85,6 @@ function SceneContent({ targetIndex, setDisplayIndex, numConstellations }) {
     
     const newRotation = THREE.MathUtils.lerp(currentRotation, targetRotation, 0.05);
     groupRef.current.rotation.y = newRotation;
-
-    const hasArrived = Math.abs(newRotation - targetRotation) < 0.005;
   });
 
   return (
