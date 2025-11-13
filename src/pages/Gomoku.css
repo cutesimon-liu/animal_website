@@ -6,9 +6,17 @@
 .gomoku-game {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
-  margin-top: 20px;
+  width: 100%;
+}
+
+.gomoku-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
+    width: 100%;
 }
 
 .control-group {
@@ -16,12 +24,14 @@
     flex-direction: column;
 }
 
-.gomoku-status {
-  margin-bottom: 15px;
-  font-size: clamp(16px, 4vw, 22px);
-  font-weight: 500;
-  color: #333;
-  height: 30px;
+.status-bar {
+    margin-bottom: 5px;
+    font-size: clamp(1rem, 5vw, 1.5rem);
+    font-weight: 500;
+    color: #333;
+    text-align: center;
+    position: relative;
+    z-index: 1;
 }
 
 .gomoku-board {
@@ -81,27 +91,12 @@
     transform: translate(-50%, -50%);
 }
 
-.gomoku-reset-button {
-  margin-top: 20px;
-  padding: 10px 25px;
-  font-size: 18px;
-  cursor: pointer;
-  border: none;
-  background-color: #4CAF50; /* Green */
-  color: white;
-  border-radius: 8px;
-  transition: background-color 0.3s;
-}
-
-.gomoku-reset-button:hover {
-  background-color: #45a049;
-}
-
 .gomoku-board-container {
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 100px;
 }
 
 @media (min-width: 600px) {

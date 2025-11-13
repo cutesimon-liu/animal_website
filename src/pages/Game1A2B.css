@@ -1,0 +1,172 @@
+.game-card {
+    background-color: rgba(44, 62, 80, 0.8);
+    border: none;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    max-width: 550px;
+    width: 100%;
+    backdrop-filter: blur(5px);
+}
+
+.game-message {
+    color: #bdc3c7;
+    margin-bottom: 25px;
+    font-size: 1.1em;
+    font-weight: 500;
+    text-align: center;
+}
+
+.guess-input {
+    background-color: #34495e;
+    border: 2px solid #8e44ad;
+    color: #ecf0f1;
+    text-align: center;
+    font-size: 1.8em;
+    padding: 10px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.guess-input:focus {
+    background-color: #3e5268;
+    border-color: #9b59b6;
+    box-shadow: 0 0 10px rgba(142, 68, 173, 0.5);
+}
+
+.guess-input::placeholder {
+    color: #95a5a6;
+}
+
+.submit-button,
+.new-game-button {
+    background-color: #8e44ad;
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 12px 35px;
+    font-size: 1.2em;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.submit-button:hover,
+.new-game-button:hover {
+    background-color: #9b59b6;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.history-section {
+    margin-top: 35px;
+    border-top: 1px solid rgba(142, 68, 173, 0.4);
+    padding-top: 25px;
+}
+
+.history-section h3 {
+    color: #8e44ad;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.list-unstyled {
+    max-height: 250px;
+    overflow-y: auto;
+    padding-right: 10px; /* For scrollbar */
+}
+
+.list-unstyled::-webkit-scrollbar {
+    width: 8px;
+}
+
+.list-unstyled::-webkit-scrollbar-track {
+    background: #34495e;
+    border-radius: 10px;
+}
+
+.list-unstyled::-webkit-scrollbar-thumb {
+    background: #8e44ad;
+    border-radius: 10px;
+}
+
+.list-unstyled::-webkit-scrollbar-thumb:hover {
+    background: #9b59b6;
+}
+
+.history-item {
+    background-color: #34495e;
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+}
+
+.history-item:hover {
+    transform: translateX(5px);
+}
+
+.history-guess {
+    font-weight: 600;
+    color: #ecf0f1;
+    font-size: 1.1em;
+}
+
+.history-result {
+    color: #2ecc71;
+    font-weight: 700;
+    font-size: 1.2em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.number-keypad {
+    background-color: rgba(44, 62, 80, 0.8);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.keypad-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    width: 100%;
+    max-width: 300px; /* Limit keypad width */
+}
+
+.keypad-button {
+    background-color: #34495e;
+    border: 1px solid #8e44ad;
+    color: #ecf0f1;
+    font-size: 1.5em;
+    padding: 15px 0;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    font-weight: 600;
+}
+
+.keypad-button:hover {
+    background-color: #4a627a;
+    border-color: #9b59b6;
+    transform: translateY(-1px);
+}
+
+.keypad-button.control-button {
+    background-color: #e67e22;
+    border-color: #d35400;
+}
+
+.keypad-button.control-button:hover {
+    background-color: #e08e4b;
+    border-color: #e67e22;
+}

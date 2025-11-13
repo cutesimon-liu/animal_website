@@ -84,21 +84,28 @@ const Game2048 = () => {
     for (let r = 0; r < size; r++) {
       for (let c = 0; c < size; c++) {
         if (currentBoard[r][c] === 0) {
-          return;
+          return false;
         }
         if (r < size - 1 && currentBoard[r][c] === currentBoard[r + 1][c]) {
-          return;
+          return false;
         }
         if (c < size - 1 && currentBoard[r][c] === currentBoard[r][c + 1]) {
-          return;
+          return false;
         }
       }
     }
-    setGameOver(true);
+    return true;
   }, [size]);
 
   const move = useCallback((direction) => {
-    const process = (board) => {
+    if (gameOver) return;
+
+    setBoard(currentBoard => {
+      let newBoard = [...currentBoard.map(row => [...row])];
+      let boardChanged = false;
+      let currentScore = 0;
+
+      const process = (board) => {
         let tempBoard = [...board.map(row => [...row])];
         let tempScore = 0;
         let changed = false;
@@ -111,53 +118,44 @@ const Game2048 = () => {
             tempScore += newScore;
         }
         return {board: tempBoard, score: tempScore, changed };
-    }
+      }
 
-    setBoard(currentBoard => {
-      if (gameOver) return currentBoard;
-
-      let newBoard = [...currentBoard.map(row => [...row])];
-      let boardChanged = false;
-      let currentScore = 0;
-
-      if (direction === 'ArrowDown') {
-          newBoard = rotateLeft(newBoard);
-          newBoard = rotateLeft(newBoard);
-          newBoard = rotateLeft(newBoard);
-          const {board: processedBoard, score: scoreToAdd, changed} = process(newBoard);
-          newBoard = processedBoard;
-          currentScore += scoreToAdd;
-          boardChanged = changed;
-          newBoard = rotateRight(newBoard);
-          newBoard = rotateRight(newBoard);
-          newBoard = rotateRight(newBoard);
-      } else if (direction === 'ArrowUp') {
-          newBoard = rotateLeft(newBoard);
-          const {board: processedBoard, score: scoreToAdd, changed} = process(newBoard);
-          newBoard = processedBoard;
-          currentScore += scoreToAdd;
-          boardChanged = changed;
-          newBoard = rotateRight(newBoard);
+      if (direction === 'ArrowUp') {
+        newBoard = rotateLeft(newBoard);
+        const {board: processedBoard, score: scoreToAdd, changed} = process(newBoard);
+        newBoard = processedBoard;
+        currentScore += scoreToAdd;
+        boardChanged = changed;
+        newBoard = rotateRight(newBoard);
+      } else if (direction === 'ArrowDown') {
+        newBoard = rotateRight(newBoard);
+        const {board: processedBoard, score: scoreToAdd, changed} = process(newBoard);
+        newBoard = processedBoard;
+        currentScore += scoreToAdd;
+        boardChanged = changed;
+        newBoard = rotateLeft(newBoard);
       } else if (direction === 'ArrowLeft') {
-          const {board: processedBoard, score: scoreToAdd, changed} = process(newBoard);
-          newBoard = processedBoard;
-          currentScore += scoreToAdd;
-          boardChanged = changed;
+        const {board: processedBoard, score: scoreToAdd, changed} = process(newBoard);
+        newBoard = processedBoard;
+        currentScore += scoreToAdd;
+        boardChanged = changed;
       } else if (direction === 'ArrowRight') {
-          newBoard = rotateLeft(newBoard);
-          newBoard = rotateLeft(newBoard);
-          const {board: processedBoard, score: scoreToAdd, changed} = process(newBoard);
-          newBoard = processedBoard;
-          currentScore += scoreToAdd;
-          boardChanged = changed;
-          newBoard = rotateRight(newBoard);
-          newBoard = rotateRight(newBoard);
+        newBoard = rotateLeft(newBoard);
+        newBoard = rotateLeft(newBoard);
+        const {board: processedBoard, score: scoreToAdd, changed} = process(newBoard);
+        newBoard = processedBoard;
+        currentScore += scoreToAdd;
+        boardChanged = changed;
+        newBoard = rotateRight(newBoard);
+        newBoard = rotateRight(newBoard);
       }
 
       if (boardChanged) {
         addRandomTile(newBoard);
         setScore(prevScore => prevScore + currentScore);
-        checkGameOver(newBoard);
+        if (checkGameOver(newBoard)) {
+          setGameOver(true);
+        }
         return newBoard;
       }
       return currentBoard;
@@ -189,25 +187,29 @@ const Game2048 = () => {
 
   return (
     <div className="game-2048">
-      <div className="title-container">
-        <h1>2048</h1>
+      <h1>2048</h1>
+      <div className="game-header">
         <div className="score-container">Score: {score}</div>
       </div>
-      <div className="game-header">
-        <button onClick={resetGame}>New Game</button>
-      </div>
-      <div className="game-2048-board">
-        {board.map((row, rowIndex) => (
-          <div key={rowIndex} className="board-row">
-            {row.map((tile, colIndex) => (
-              <div key={colIndex} className={`tile tile-${tile}`}>
-                {tile > 0 ? tile : ''}
-              </div>
-            ))}
+      <div className="game-main">
+        <div className="game-2048-board">
+          {board.flat().map((tile, index) => (
+            <div key={index} className={`tile tile-${tile}`}>
+              {tile > 0 ? tile : ''}
+            </div>
+          ))}
+          {gameOver && <div className="game-over-overlay"><div>Game Over</div></div>}
+        </div>
+        <div className="controls">
+          <button onClick={resetGame} className="reset-button">New Game</button>
+          <button onClick={() => move('ArrowUp')} className="control-button">↑</button>
+          <div className="left-right-controls">
+            <button onClick={() => move('ArrowLeft')} className="control-button">←</button>
+            <button onClick={() => move('ArrowDown')} className="control-button">↓</button>
+            <button onClick={() => move('ArrowRight')} className="control-button">→</button>
           </div>
-        ))}
+        </div>
       </div>
-      {gameOver && <div className="game-over">Game Over!</div>}
     </div>
   );
 };

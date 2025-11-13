@@ -76,8 +76,8 @@ const Gomoku = ({ gameMode, difficulty, resetSignal }) => {
   };
 
   return (
-    <div className="main-content-container">
-      <div className="gomoku-status">{getStatus()}</div>
+    <div className="gomoku-container">
+      <div className="status-bar">{getStatus()}</div>
       <div className="gomoku-board-container">
         <div className="gomoku-board">
           {board.map((row, rowIndex) => (
@@ -97,7 +97,6 @@ const Gomoku = ({ gameMode, difficulty, resetSignal }) => {
           ))}
         </div>
       </div>
-      <button className="gomoku-reset-button" onClick={resetGame}>重新開始</button>
     </div>
   );
 };
@@ -273,7 +272,8 @@ const generateCandidates = (board) => {
 const GomokuWithLogic = withGameLogic(Gomoku, {
     gameName: 'gomoku',
     displayName: '五子棋',
-    difficulties: ['easy', 'medium', 'hard']
+    difficulties: ['easy', 'medium', 'hard'],
+    hasGameModeSelection: true,
 });
 
 export default GomokuWithLogic;

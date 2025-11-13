@@ -7,10 +7,24 @@
   width: 100%;
 }
 
+.game-title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2.5em;
+    color: #333;
+}
+
+.game {
+    width: 100%;
+}
+
 .game h1 {
     font-size: 2.5rem;
     margin-bottom: 10px;
     color: #333;
+    text-align: center;
+    width: 100%;
+    display: block;
 }
 
 .game-controls {

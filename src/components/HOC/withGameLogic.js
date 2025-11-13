@@ -28,15 +28,17 @@ const withGameLogic = (WrappedComponent, gameConfig) => {
 
     return (
       <div className={`${gameConfig.gameName}-game`}>
-        <h1>{gameConfig.displayName}</h1>
-        <div className={`${gameConfig.gameName}-controls`}>
-            <Form.Group className="control-group">
-                <Form.Label>遊戲模式</Form.Label>
-                <Form.Select value={gameMode} onChange={handleGameModeChange}>
-                    <option value="pvc">人機對戰</option>
-                    <option value="pvp">雙人對戰</option>
-                </Form.Select>
-            </Form.Group>
+        <h1 className="game-title-main">{gameConfig.displayName}</h1>
+        <div className="game-controls">
+            {gameConfig.hasGameModeSelection !== false && (
+                <Form.Group className="control-group">
+                    <Form.Label>遊戲模式</Form.Label>
+                    <Form.Select value={gameMode} onChange={handleGameModeChange}>
+                        <option value="pvc">人機對戰</option>
+                        <option value="pvp">雙人對戰</option>
+                    </Form.Select>
+                </Form.Group>
+            )}
             {gameMode === 'pvc' && gameConfig.difficulties && (
                 <Form.Group className="control-group">
                     <Form.Label>遊戲難度</Form.Label>

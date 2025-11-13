@@ -445,53 +445,51 @@ const Xiangqi = ({ gameMode, difficulty, resetSignal }) => {
     };
 
     return (
-        <div className="main-content-container">
-            <div className="xiangqi-container">
-                <div className="status-bar">
-                    {winner ? `勝利者: ${winner}` : `輪到: ${isRedNext ? '紅方' : '黑方'}`}
-                    {inCheck && <span className="check-status"> (將軍!)</span>}
-                </div>
-                <div className="xiangqi-board-container">
-                    <div className="xiangqi-board">
-                        <div className="palace palace-top" />
-                        <div className="palace palace-bottom" />
-                        <div className="river">楚 河 漢 界</div>
-                        {Array(BOARD_ROWS).fill(null).map((_, r) =>
-                            Array(BOARD_COLS).fill(null).map((_, c) => {
-                                const isPossibleMove = possibleMoves.some(move => move.r === r && move.c === c);
-                                return (
-                                    <div
-                                        key={`${r}-${c}`}
-                                        className={`intersection ${isPossibleMove ? 'possible-move' : ''}`}
-                                        style={{
-                                            top: `${r * (100 / 9)}%`,
-                                            left: `${c * (100 / 8)}%`,
-                                        }}
-                                        onClick={() => handleSquareClick(r, c)}
-                                    />
-                                );
-                            })
-                        )}
-                        {board.map((row, r) =>
-                            row.map((piece, c) => {
-                                if (!piece) return null;
-                                const isSelected = selectedPiece && selectedPiece.r === r && selectedPiece.c === c;
-                                return (
-                                    <div
-                                        key={`${r}-${c}-piece`}
-                                        className={`piece ${piece.color} ${isSelected ? 'selected' : ''}`}
-                                        style={{
-                                            top: `${r * (100 / 9)}%`,
-                                            left: `${c * (100 / 8)}%`,
-                                        }}
-                                        onClick={() => handleSquareClick(r, c)}
-                                    >
-                                        {piece.name}
-                                    </div>
-                                );
-                            })
-                        )}
-                    </div>
+        <div className="xiangqi-container">
+            <div className="status-bar">
+                {winner ? `勝利者: ${winner}` : `輪到: ${isRedNext ? '紅方' : '黑方'}`}
+                {inCheck && <span className="check-status"> (將軍!)</span>}
+            </div>
+            <div className="xiangqi-board-container">
+                <div className="xiangqi-board">
+                    <div className="palace palace-top" />
+                    <div className="palace palace-bottom" />
+                    <div className="river">楚 河 漢 界</div>
+                    {Array(BOARD_ROWS).fill(null).map((_, r) =>
+                        Array(BOARD_COLS).fill(null).map((_, c) => {
+                            const isPossibleMove = possibleMoves.some(move => move.r === r && move.c === c);
+                            return (
+                                <div
+                                    key={`${r}-${c}`}
+                                    className={`intersection ${isPossibleMove ? 'possible-move' : ''}`}
+                                    style={{
+                                        top: `${r * (100 / 9)}%`,
+                                        left: `${c * (100 / 8)}%`,
+                                    }}
+                                    onClick={() => handleSquareClick(r, c)}
+                                />
+                            );
+                        })
+                    )}
+                    {board.map((row, r) =>
+                        row.map((piece, c) => {
+                            if (!piece) return null;
+                            const isSelected = selectedPiece && selectedPiece.r === r && selectedPiece.c === c;
+                            return (
+                                <div
+                                    key={`${r}-${c}-piece`}
+                                    className={`piece ${piece.color} ${isSelected ? 'selected' : ''}`}
+                                    style={{
+                                        top: `${r * (100 / 9)}%`,
+                                        left: `${c * (100 / 8)}%`,
+                                    }}
+                                    onClick={() => handleSquareClick(r, c)}
+                                >
+                                    {piece.name}
+                                </div>
+                            );
+                        })
+                    )}
                 </div>
             </div>
         </div>
@@ -502,6 +500,7 @@ const XiangqiWithLogic = withGameLogic(Xiangqi, {
     gameName: 'xiangqi',
     displayName: '象棋',
     difficulties: ['easy', 'medium', 'hard'],
+    hasGameModeSelection: true,
 });
 
 export default XiangqiWithLogic;
