@@ -367,6 +367,7 @@ const Xiangqi = ({ gameMode, difficulty, resetSignal }) => {
     const [possibleMoves, setPossibleMoves] = useState([]);
     const [winner, setWinner] = useState(null);
     const [inCheck, setInCheck] = useState(null);
+    const [showRules, setShowRules] = useState(false);
 
     const resetGame = useCallback(() => {
         setBoard(getInitialBoard());
@@ -492,10 +493,37 @@ const Xiangqi = ({ gameMode, difficulty, resetSignal }) => {
                     )}
                 </div>
             </div>
+            <button className={`rules-toggle-button ${showRules ? 'shifted' : ''}`} onClick={() => setShowRules(!showRules)}>
+                {showRules ? '隱藏規則' : '顯示規則'}
+            </button>
+
+            <div className={`rules-overlay ${showRules ? 'show' : ''}`}>
+                <div className="rules-content">
+                    <h3>象棋規則</h3>
+                    <h4>遊戲目標</h4>
+                    <p>將死對方的「將」或「帥」。</p>
+                    <h4>基本規則</h4>
+                    <ul>
+                        <li><strong>將/帥 (King):</strong> 只能在九宮（由四個小方格組成的區域）內移動，每次只能沿著直線或橫線移動一格。帥和將不能在同一條直線上直接相對，中間必須有其他棋子。</li>
+                        <li><strong>士/仕 (Advisor):</strong> 只能在九宮內沿著斜線移動一格。</li>
+                        <li><strong>象/相 (Elephant):</strong> 不能過河。每次移動走「田」字（即斜走兩格），但如果「田」字的中心有棋子（稱為「塞象眼」），則不能移動。</li>
+                        <li><strong>馬/傌 (Horse):</strong> 走「日」字（即直走一格再斜走一格）。如果馬的移動路徑上，與其相鄰的交叉點有棋子（稱為「蹩馬腿」），則不能朝該方向移動。</li>
+                        <li><strong>車/俥 (Chariot):</strong> 可以在棋盤上無限制地直線或橫線移動，只要路徑上沒有其他棋子。</li>
+                        <li><strong>炮/砲 (Cannon):</strong> 移動時與車相同。吃子時，必須在自己和對方棋子之間隔著一個棋子（稱為「炮台」或「翻山」）。</li>
+                        <li><strong>兵/卒 (Pawn):</strong> 在過河前，每次只能向前移動一格。過河後，除了向前，還可以向左或向右移動一格，但不能後退。</li>
+                    </ul>
+                    <h4>特殊規則</h4>
+                    <ul>
+                        <li><strong>將軍 (Check):</strong> 當一方的棋子攻擊到對方的將/帥時，稱為「將軍」。被將軍的一方必須立即「應將」，即移動將/帥或用其他棋子擋住攻擊。</li>
+                        - <li><strong>將死 (Checkmate):</strong> 如果被將軍的一方無法應將，則為「將死」，遊戲結束。</li>
+                        - <li><strong>困斃 (Stalemate):</strong> 如果輪到一方走棋，但其已無子可走（所有棋子都被困住），則為「困斃」，判和棋。</li>
+                    </ul>
+                    <button className="close-rules-button" onClick={() => setShowRules(false)}>關閉</button>
+                </div>
+            </div>
         </div>
     );
 };
-
 const XiangqiWithLogic = withGameLogic(Xiangqi, {
     gameName: 'xiangqi',
     displayName: '象棋',

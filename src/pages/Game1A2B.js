@@ -43,6 +43,7 @@ const Game1A2B = ({ resetSignal }) => {
     const [history, setHistory] = useState([]);
     const [message, setMessage] = useState('');
     const [gameOver, setGameOver] = useState(false);
+    const [showRules, setShowRules] = useState(false);
 
     const startNewGame = () => {
         setSecretNumber(generateSecretNumber());
@@ -116,57 +117,80 @@ const Game1A2B = ({ resetSignal }) => {
     };
 
     return (
-        <Row className="justify-content-center">
-            <Col md={6}>
-                <Card className="game-card">
-                    <Card.Body>
-                        <p className="game-message">{message}</p>
-                        {!gameOver ? (
-                            <Form onSubmit={handleSubmitGuess}>
-                                <Form.Group as={Row} className="mb-3 justify-content-center">
-                                    <Col xs={6} md={4}>
-                                        <Form.Control
-                                            type="text"
-                                            maxLength="4"
-                                            value={guess}
-                                            onChange={handleGuessChange}
-                                            placeholder="輸入你的猜測"
-                                            className="guess-input"
-                                            autoFocus
-                                        />
-                                    </Col>
-                                </Form.Group>
-                                <Button variant="primary" type="submit" className="submit-button">
-                                    猜！
-                                </Button>
-                            </Form>
-                        ) : (
-                            <Button variant="success" onClick={startNewGame} className="new-game-button">
-                                再玩一次
+        <div className="game-elements-container">
+            <Card className="game-card">
+                <Card.Body>
+                    <p className="game-message">{message}</p>
+                    {!gameOver ? (
+                        <Form onSubmit={handleSubmitGuess}>
+                            <Form.Group as={Row} className="mb-3 justify-content-center">
+                                <Col xs={6} md={4}>
+                                    <Form.Control
+                                        type="text"
+                                        maxLength="4"
+                                        value={guess}
+                                        onChange={handleGuessChange}
+                                        placeholder="輸入你的猜測"
+                                        className="guess-input"
+                                        autoFocus
+                                    />
+                                </Col>
+                            </Form.Group>
+                            <Button variant="primary" type="submit" className="submit-button">
+                                猜！
                             </Button>
-                        )}
+                        </Form>
+                    ) : (
+                        <Button variant="success" onClick={startNewGame} className="new-game-button">
+                            再玩一次
+                        </Button>
+                    )}
 
-                        <div className="history-section mt-4">
-                            <h3>猜測歷史</h3>
-                            {history.length === 0 ? (
-                                <p>還沒有猜測記錄。</p>
-                            ) : (
-                                <ul className="list-unstyled">
-                                    {history.map((entry, index) => (
-                                        <li key={index} className="history-item">
-                                            <span className="history-guess">{entry.guess}</span> - <span className="history-result">{entry.result}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </div>
-                    </Card.Body>
-                </Card>
-            </Col>
-            <Col md={4}>
-                <NumberKeypad onKeyPress={handleKeyPress} onClear={handleClear} onDelete={handleDelete} />
-            </Col>
-        </Row>
+                    <div className="history-section mt-4">
+                        <h3>猜測歷史</h3>
+                        {history.length === 0 ? (
+                            <p>還沒有猜測記錄。</p>
+                        ) : (
+                            <ul className="list-unstyled">
+                                {history.map((entry, index) => (
+                                    <li key={index} className="history-item">
+                                        <span className="history-guess">{entry.guess}</span> - <span className="history-result">{entry.result}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                </Card.Body>
+            </Card>
+            <NumberKeypad onKeyPress={handleKeyPress} onClear={handleClear} onDelete={handleDelete} />
+            <button className={`rules-toggle-button ${showRules ? 'shifted' : ''}`} onClick={() => setShowRules(!showRules)}>
+                {showRules ? '隱藏規則' : '顯示規則'}
+            </button>
+
+            <div className={`rules-overlay ${showRules ? 'show' : ''}`}>
+                <div className="rules-content">
+                    <h3>1A2B 規則</h3>
+                    <h4>遊戲目標</h4>
+                    <p>猜出一個由電腦隨機產生的四位不重複數字。</p>
+                    <h4>遊戲玩法</h4>
+                    <p>在輸入框中輸入你猜測的四位數字，然後點擊「猜！」按鈕。</p>
+                    <p>電腦會根據你的猜測給出提示，格式為「xA yB」，其中：</p>
+                    <ul>
+                        <li><strong>A (Bull):</strong> 表示有數字不僅猜對了，而且位置也正確。</li>
+                        <li><strong>B (Cow):</strong> 表示有數字猜對了，但位置不正確。</li>
+                    </ul>
+                    <h4>範例</h4>
+                    <p>假設秘密數字是 <strong>1234</strong>。</p>
+                    <p>如果你猜 <strong>1456</strong>，結果會是 <strong>1A 1B</strong>。</p>
+                    <ul>
+                        <li>1A: 數字「1」猜對了，位置也正確。</li>
+                        <li>1B: 數字「4」猜對了，但位置不正確。</li>
+                    </ul>
+                    <p>繼續根據提示猜測，直到結果為 <strong>4A 0B</strong>，即為勝利。</p>
+                    <button className="close-rules-button" onClick={() => setShowRules(false)}>關閉</button>
+                </div>
+            </div>
+        </div>
     );
 }
 

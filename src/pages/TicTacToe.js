@@ -8,6 +8,7 @@ const TicTacToe = ({ gameMode, resetSignal }) => {
   const [isXNext, setIsXNext] = useState(true);
   const [winner, setWinner] = useState(null);
   const [isComputerTurn, setIsComputerTurn] = useState(false);
+  const [showRules, setShowRules] = useState(false);
 
   useEffect(() => {
       resetGame();
@@ -80,6 +81,29 @@ const TicTacToe = ({ gameMode, resetSignal }) => {
         <div className="tictactoe-board-container"> {/* Added tictactoe-board-container */}
             <div className="game-board">
               {board.map((_, i) => renderSquare(i))}
+            </div>
+        </div>
+        <button className={`rules-toggle-button ${showRules ? 'shifted' : ''}`} onClick={() => setShowRules(!showRules)}>
+            {showRules ? '隱藏規則' : '顯示規則'}
+        </button>
+
+        <div className={`rules-overlay ${showRules ? 'show' : ''}`}>
+            <div className="rules-content">
+                <h3>井字遊戲規則</h3>
+                <h4>遊戲目標</h4>
+                <p>率先在 3x3 的棋盤上，讓自己的三個符號（X 或 O）連成一線（橫、豎、斜皆可）。</p>
+                <h4>遊戲玩法</h4>
+                <ul>
+                    <li>遊戲由兩位玩家進行，一方執 <strong>X</strong>，一方執 <strong>O</strong>。</li>
+                    <li>玩家輪流在棋盤的空格中放置自己的符號。</li>
+                    <li>通常由執 <strong>X</strong> 的玩家先行。</li>
+                </ul>
+                <h4>勝負判定</h4>
+                <ul>
+                    <li>最先將自己的三個符號連成一線的玩家獲勝。</li>
+                    <li>如果棋盤所有九個格子都被填滿，但沒有任何一方達成連線，則遊戲為<strong>平手</strong>。</li>
+                </ul>
+                <button className="close-rules-button" onClick={() => setShowRules(false)}>關閉</button>
             </div>
         </div>
     </div>

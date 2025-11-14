@@ -10,6 +10,7 @@ const Gomoku = ({ gameMode, difficulty, resetSignal }) => {
   const [winner, setWinner] = useState(null);
   const [isComputerTurn, setIsComputerTurn] = useState(false);
   const [lastMove, setLastMove] = useState(null);
+  const [showRules, setShowRules] = useState(false);
 
   const resetGame = useCallback(() => {
     setBoard(Array(BOARD_SIZE).fill(Array(BOARD_SIZE).fill(null)));
@@ -96,6 +97,28 @@ const Gomoku = ({ gameMode, difficulty, resetSignal }) => {
             </div>
           ))}
         </div>
+      </div>
+      <button className={`rules-toggle-button ${showRules ? 'shifted' : ''}`} onClick={() => setShowRules(!showRules)}>
+          {showRules ? '隱藏規則' : '顯示規則'}
+      </button>
+
+      <div className={`rules-overlay ${showRules ? 'show' : ''}`}>
+          <div className="rules-content">
+              <h3>五子棋規則</h3>
+              <h4>遊戲目標</h4>
+              <p>率先在棋盤的橫、豎、或斜任一方向上，連續排列五個己方棋子以獲得勝利。</p>
+              <h4>遊戲玩法</h4>
+              <ul>
+                  <li>遊戲由兩位玩家進行，一方執<strong>黑子</strong>，一方執<strong>白子</strong>。</li>
+                  <li>黑子先行，雙方輪流在棋盤的交叉點上放置一個己方棋子。</li>
+                  <li>棋子放下後便不能再移動。</li>
+              </ul>
+              <h4>勝負判定</h4>
+              <p>最先在棋盤上形成<strong>五子連珠</strong>（連續五個己方棋子）的一方獲勝。</p>
+              <h4>特殊說明</h4>
+              <p>本遊戲採用無禁手的規則，即沒有對長連（超過五子）、雙活三、雙四等情況做出限制。只要達成五子連線即可獲勝。</p>
+              <button className="close-rules-button" onClick={() => setShowRules(false)}>關閉</button>
+          </div>
       </div>
     </div>
   );
