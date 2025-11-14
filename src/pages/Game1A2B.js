@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Button, Form, Row, Col, Card } from 'react-bootstrap';
+import { Button, Form, Row, Col, Card } from 'react-bootstrap';
 import withGameLogic from '../components/HOC/withGameLogic';
 import './Game1A2B.css';
 
