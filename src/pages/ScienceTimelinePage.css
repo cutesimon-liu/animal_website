@@ -5,15 +5,18 @@
     min-height: 100vh;
     padding: 50px 15px;
     font-family: 'Noto Sans TC', sans-serif;
-    background: linear-gradient(135deg, #1d2b3a 0%, #0f1a2a 100%); /* Dark blue gradient background */
+    background: linear-gradient(135deg, #1d2b3a 0%, #0f1a2a 100%);
+    /* Dark blue gradient background */
     color: #fff;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow: hidden; /* Hide particles outside the container */
-    position: relative; /* For positioning pseudo-elements */
+    overflow: hidden;
+    /* Hide particles outside the container */
+    position: relative;
+    /* For positioning pseudo-elements */
 }
 
 /* Animated particles */
@@ -46,6 +49,7 @@
     0% {
         transform: translate(0, 0);
     }
+
     100% {
         transform: translate(100px, 100px);
     }
@@ -58,7 +62,8 @@
     background-color: #334a61;
     padding: 8px;
     border-radius: 25px;
-    z-index: 1; /* Ensure switcher is above particles */
+    z-index: 1;
+    /* Ensure switcher is above particles */
 }
 
 .switcher-btn {
@@ -119,7 +124,8 @@
 
 .timeline-item {
     position: relative;
-    width: calc(100% / 6 - 20px); /* 6 items, with some gap */
+    width: calc(100% / 6 - 20px);
+    /* 6 items, with some gap */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -155,12 +161,13 @@
 
 .timeline-item-content {
     position: absolute;
-    bottom: 90px; /* Position card above the node */
+    bottom: 90px;
+    /* Position card above the node */
     width: 250px;
     padding: 20px;
     background-color: #334a61;
     border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     opacity: 0;
     visibility: hidden;
     transform: translateY(20px);
@@ -225,7 +232,7 @@
     color: white;
     padding: 5px 10px;
     border-radius: 15px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 /* Responsive adjustments */
@@ -240,42 +247,55 @@
         flex-direction: column;
         width: auto;
     }
+
     .timeline-container::after {
-        left: 31px;
+        left: 75px;
         width: 6px;
         height: 100%;
     }
+
     .timeline-item {
         width: 100%;
         flex-direction: row;
         align-items: flex-start;
         padding: 20px 0;
     }
+
     .timeline-node {
         flex-direction: row;
         align-items: center;
-        margin-left: 18px;
+        margin-left: 0;
+        min-width: 120px;
     }
+
     .timeline-year {
         margin-bottom: 0;
         margin-right: 15px;
-        width: 50px;
+        width: 70px;
+        flex-shrink: 0;
+        text-align: right;
     }
+
     .timeline-circle {
         position: absolute;
-        left: 0;
+        left: 75px;
         top: 50%;
         transform: translateY(-50%);
     }
+
     .timeline-item-content {
         position: relative;
         bottom: auto;
-        left: 100px;
-        width: calc(100% - 120px);
+        left: auto;
+        margin-left: 85px;
+        width: auto;
+        max-width: calc(100% - 95px);
         opacity: 1;
         visibility: visible;
         transform: none;
+        box-sizing: border-box;
     }
+
     .timeline-item-content::after {
         content: " ";
         position: absolute;
@@ -284,7 +304,21 @@
         border-width: 10px 10px 10px 0;
         border-color: transparent #334a61 transparent transparent;
     }
+
     .timeline-page-subtitle {
-        display: none; /* Hide subtitle on mobile as hover is not available */
+        display: none;
+        /* Hide subtitle on mobile as hover is not available */
+    }
+
+    .tag {
+        position: relative;
+        top: auto;
+        left: auto;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+
+    .timeline-item-content p {
+        font-size: 1rem;
     }
 }

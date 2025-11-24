@@ -1,8 +1,9 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
+import withGameLogic from '../components/HOC/withGameLogic';
 import './Game2048.css';
 
-const Game2048 = () => {
+const Game2048 = ({ resetSignal }) => {
   const size = 5;
   const [board, setBoard] = useState([]);
   const [score, setScore] = useState(0);
@@ -111,39 +112,39 @@ const Game2048 = () => {
         let tempScore = 0;
         let changed = false;
         for (let i = 0; i < size; i++) {
-            const { row: newRow, score: newScore } = operate([...tempBoard[i]]);
-            if (JSON.stringify(tempBoard[i]) !== JSON.stringify(newRow)) {
-                changed = true;
-            }
-            tempBoard[i] = newRow;
-            tempScore += newScore;
+          const { row: newRow, score: newScore } = operate([...tempBoard[i]]);
+          if (JSON.stringify(tempBoard[i]) !== JSON.stringify(newRow)) {
+            changed = true;
+          }
+          tempBoard[i] = newRow;
+          tempScore += newScore;
         }
-        return {board: tempBoard, score: tempScore, changed };
+        return { board: tempBoard, score: tempScore, changed };
       }
 
       if (direction === 'ArrowUp') {
         newBoard = rotateLeft(newBoard);
-        const {board: processedBoard, score: scoreToAdd, changed} = process(newBoard);
+        const { board: processedBoard, score: scoreToAdd, changed } = process(newBoard);
         newBoard = processedBoard;
         currentScore += scoreToAdd;
         boardChanged = changed;
         newBoard = rotateRight(newBoard);
       } else if (direction === 'ArrowDown') {
         newBoard = rotateRight(newBoard);
-        const {board: processedBoard, score: scoreToAdd, changed} = process(newBoard);
+        const { board: processedBoard, score: scoreToAdd, changed } = process(newBoard);
         newBoard = processedBoard;
         currentScore += scoreToAdd;
         boardChanged = changed;
         newBoard = rotateLeft(newBoard);
       } else if (direction === 'ArrowLeft') {
-        const {board: processedBoard, score: scoreToAdd, changed} = process(newBoard);
+        const { board: processedBoard, score: scoreToAdd, changed } = process(newBoard);
         newBoard = processedBoard;
         currentScore += scoreToAdd;
         boardChanged = changed;
       } else if (direction === 'ArrowRight') {
         newBoard = rotateLeft(newBoard);
         newBoard = rotateLeft(newBoard);
-        const {board: processedBoard, score: scoreToAdd, changed} = process(newBoard);
+        const { board: processedBoard, score: scoreToAdd, changed } = process(newBoard);
         newBoard = processedBoard;
         currentScore += scoreToAdd;
         boardChanged = changed;
@@ -163,15 +164,12 @@ const Game2048 = () => {
     });
   }, [gameOver, operate, addRandomTile, checkGameOver, rotateLeft, rotateRight, size]);
 
-  const resetGame = () => {
+  // Reset game when resetSignal changes
+  useEffect(() => {
     setBoard(createBoard());
     setScore(0);
     setGameOver(false);
-  };
-
-  useEffect(() => {
-    setBoard(createBoard());
-  }, [createBoard]);
+  }, [resetSignal, createBoard]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -188,7 +186,6 @@ const Game2048 = () => {
 
   return (
     <div className="game-2048">
-      <h1>2048</h1>
       <div className="game-header">
         <div className="score-container">Score: {score}</div>
       </div>
@@ -202,7 +199,6 @@ const Game2048 = () => {
           {gameOver && <div className="game-over-overlay"><div>Game Over</div></div>}
         </div>
         <div className="controls">
-          <button onClick={resetGame} className="reset-button">New Game</button>
           <button onClick={() => move('ArrowUp')} className="control-button">↑</button>
           <div className="left-right-controls">
             <button onClick={() => move('ArrowLeft')} className="control-button">←</button>
@@ -212,33 +208,40 @@ const Game2048 = () => {
         </div>
       </div>
       <button className={`rules-toggle-button ${showRules ? 'shifted' : ''}`} onClick={() => setShowRules(!showRules)}>
-          {showRules ? '隱藏規則' : '顯示規則'}
+        {showRules ? '隱藏規則' : '顯示規則'}
       </button>
 
       <div className={`rules-overlay ${showRules ? 'show' : ''}`}>
-          <div className="rules-content">
-              <h3>2048 規則</h3>
-              <h4>遊戲目標</h4>
-              <p>在 5x5 的棋盤上，通過合併數字方塊，最終合成出 <strong>2048</strong> 的方塊。</p>
-              <h4>遊戲玩法</h4>
-              <p>使用<strong>方向鍵</strong>（上、下、左、右）或遊戲介面上的<strong>按鈕</strong>來移動棋盤上的所有方塊。</p>
-              <p>當兩個相同數字的方塊在移動過程中碰撞時，它們會合併成一個數字為兩者之和的新方塊。</p>
-              <p>每次移動後，棋盤上會隨機出現一個數字為 2 或 4 的新方塊。</p>
-              <h4>計分</h4>
-              <p>合併方塊時，你會獲得新方塊的數字作為分數。遊戲會累計你的總分。</p>
-              <h4>遊戲結束</h4>
-              <p>當棋盤上沒有任何空格，且沒有相鄰的方塊可以合併時，遊戲結束。</p>
-              <h4>策略提示</h4>
-              <ul>
-                  <li><strong>角落策略：</strong> 盡量將數字最大的方塊保持在一個角落，並圍繞它來排列其他方塊。</li>
-                  <li><strong>保持單向：</strong> 避免在不需要時使用某個方向鍵（例如，如果你將大數字放在右下角，就盡量少用「上」方向鍵）。</li>
-                  <li><strong>預判合併：</strong> 在移動前，思考一下哪些方塊會合併，以及新方塊可能出現的位置。</li>
-              </ul>
-              <button className="close-rules-button" onClick={() => setShowRules(false)}>關閉</button>
-          </div>
+        <div className="rules-content">
+          <h3>2048 規則</h3>
+          <h4>遊戲目標</h4>
+          <p>在 5x5 的棋盤上，通過合併數字方塊，最終合成出 <strong>2048</strong> 的方塊。</p>
+          <h4>遊戲玩法</h4>
+          <p>使用<strong>方向鍵</strong>（上、下、左、右）或遊戲介面上的<strong>按鈕</strong>來移動棋盤上的所有方塊。</p>
+          <p>當兩個相同數字的方塊在移動過程中碰撞時，它們會合併成一個數字為兩者之和的新方塊。</p>
+          <p>每次移動後，棋盤上會隨機出現一個數字為 2 或 4 的新方塊。</p>
+          <h4>計分</h4>
+          <p>合併方塊時，你會獲得新方塊的數字作為分數。遊戲會累計你的總分。</p>
+          <h4>遊戲結束</h4>
+          <p>當棋盤上沒有任何空格，且沒有相鄰的方塊可以合併時，遊戲結束。</p>
+          <h4>策略提示</h4>
+          <ul>
+            <li><strong>角落策略：</strong> 盡量將數字最大的方塊保持在一個角落，並圍繞它來排列其他方塊。</li>
+            <li><strong>保持單向：</strong> 避免在不需要時使用某個方向鍵（例如，如果你將大數字放在右下角，就盡量少用「上」方向鍵）。</li>
+            <li><strong>預判合併：</strong> 在移動前，思考一下哪些方塊會合併，以及新方塊可能出現的位置。</li>
+          </ul>
+          <button className="close-rules-button" onClick={() => setShowRules(false)}>關閉</button>
+        </div>
       </div>
     </div>
   );
 };
 
-export default Game2048;
+const Game2048WithLogic = withGameLogic(Game2048, {
+  gameName: 'game-2048',
+  displayName: '2048',
+  hasGameModeSelection: false,
+  difficulties: null,
+});
+
+export default Game2048WithLogic;

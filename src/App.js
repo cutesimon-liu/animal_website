@@ -17,6 +17,7 @@ import ConstellationPage from './pages/ConstellationPage';
 import ConstellationKnowledgeDetailPage from './pages/ConstellationKnowledgeDetailPage';
 import ScienceTimelinePage from './pages/ScienceTimelinePage';
 import TheoryDetailPage from './pages/TheoryDetailPage';
+import DarkChess from './pages/DarkChess';
 
 
 const ThemeLayout = ({ children }) => {
@@ -28,7 +29,7 @@ const ThemeLayout = ({ children }) => {
       document.body.className = 'first-bg';
     } else if (path.startsWith('/universe') || path.startsWith('/planet') || path.startsWith('/constellation-knowledge') || path.startsWith('/science-timeline')) {
       document.body.className = 'universe-bg';
-    } else if (path.startsWith('/tictactoe') || path.startsWith('/gomoku') || path.startsWith('/xiangqi') || path.startsWith('/game2048') || path.startsWith('/game1a2b')) {
+    } else if (path.startsWith('/tictactoe') || path.startsWith('/gomoku') || path.startsWith('/xiangqi') || path.startsWith('/game2048') || path.startsWith('/game1a2b') || path.startsWith('/darkchess')) {
       document.body.className = 'game-bg';
     } else if (path.startsWith('/animal') || path.startsWith('/animals')) {
       document.body.className = 'animal-bg';
@@ -72,6 +73,7 @@ function App() {
               <Route path="/xiangqi" element={<Xiangqi />} />
               <Route path="/game2048" element={<Game2048 />} />
               <Route path="/game1a2b" element={<Game1A2B />} />
+              <Route path="/darkchess" element={<DarkChess />} />
               <Route path="/universe-knowledge/:id" element={<UniverseKnowledgeDetailPage />} />
               <Route path="/constellation/:id" element={<ConstellationPage />} />
               <Route path="/constellation-knowledge/:id" element={<ConstellationKnowledgeDetailPage />} />
