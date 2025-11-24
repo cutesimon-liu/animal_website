@@ -41,7 +41,7 @@ const DarkChess = ({ gameMode, difficulty, resetSignal }) => {
   const [blackCaptured, setBlackCaptured] = useState([]);
   const [isComputerTurn, setIsComputerTurn] = useState(false);
   const [aiColor, setAiColor] = useState(null);
-  const [aiDifficulty, setAiDifficulty] = useState(difficulty || 'easy');
+  const [aiDifficulty] = useState(difficulty || 'easy');
 
   const [isContinuousCapture, setIsContinuousCapture] = useState(false);
   const [aiPendingMove, setAiPendingMove] = useState(null);
@@ -665,6 +665,7 @@ const DarkChess = ({ gameMode, difficulty, resetSignal }) => {
         setPossibleMoves(calculatePossibleMoves(targetPiece, row, col, board));
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [board, revealed, selectedPiece, currentPlayer, isContinuousCapture, possibleMoves, gameOver, playerColor]);
 
   const handleUserClick = (row, col) => {
@@ -737,6 +738,7 @@ const DarkChess = ({ gameMode, difficulty, resetSignal }) => {
       }
     }, 500);
     return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isComputerTurn, aiPendingMove, board, revealed, aiColor, aiDifficulty, isContinuousCapture, selectedPiece]);
 
   // Execute AI move when aiPendingMove is set
@@ -885,6 +887,7 @@ const DarkChess = ({ gameMode, difficulty, resetSignal }) => {
       }, 500);
       return () => clearTimeout(timer);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [aiPendingMove, isComputerTurn, isContinuousCapture, board, playerColor, revealed]);
 
   return (
