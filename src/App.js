@@ -18,6 +18,7 @@ import ConstellationKnowledgeDetailPage from './pages/ConstellationKnowledgeDeta
 import ScienceTimelinePage from './pages/ScienceTimelinePage';
 import TheoryDetailPage from './pages/TheoryDetailPage';
 import DarkChess from './pages/DarkChess';
+import Chatbot from './components/Chatbot';
 
 
 const ThemeLayout = ({ children }) => {
@@ -61,25 +62,26 @@ function App() {
     <Router>
       <ThemeLayout>
         <NavigationBar counts={counts} />
+        <Chatbot />
         <main>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/animals" element={<HomePage />} />
-              <Route path="/animal/:id" element={<AnimalDetailPage />} />
-              <Route path="/universe" element={<UniversePage />} />
-              <Route path="/planet/:id" element={<PlanetDetailPage />} />
-              <Route path="/tictactoe" element={<TicTacToe />} />
-              <Route path="/gomoku" element={<Gomoku />} />
-              <Route path="/xiangqi" element={<Xiangqi />} />
-              <Route path="/game2048" element={<Game2048 />} />
-              <Route path="/game1a2b" element={<Game1A2B />} />
-              <Route path="/darkchess" element={<DarkChess />} />
-              <Route path="/universe-knowledge/:id" element={<UniverseKnowledgeDetailPage />} />
-              <Route path="/constellation/:id" element={<ConstellationPage />} />
-              <Route path="/constellation-knowledge/:id" element={<ConstellationKnowledgeDetailPage />} />
-              <Route path="/science-timeline" element={<ScienceTimelinePage />} />
-              <Route path="/theory/:id" element={<TheoryDetailPage />} />
-            </Routes>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/animals" element={<HomePage />} />
+            <Route path="/animal/:id" element={<AnimalDetailPage />} />
+            <Route path="/universe" element={<UniversePage />} />
+            <Route path="/planet/:id" element={<PlanetDetailPage />} />
+            <Route path="/tictactoe" element={<TicTacToe />} />
+            <Route path="/gomoku" element={<Gomoku />} />
+            <Route path="/xiangqi" element={<Xiangqi />} />
+            <Route path="/game2048" element={<Game2048 />} />
+            <Route path="/game1a2b" element={<Game1A2B />} />
+            <Route path="/darkchess" element={<DarkChess />} />
+            <Route path="/universe-knowledge/:id" element={<UniverseKnowledgeDetailPage />} />
+            <Route path="/constellation/:id" element={<ConstellationPage />} />
+            <Route path="/constellation-knowledge/:id" element={<ConstellationKnowledgeDetailPage />} />
+            <Route path="/science-timeline" element={<ScienceTimelinePage />} />
+            <Route path="/theory/:id" element={<TheoryDetailPage />} />
+          </Routes>
         </main>
       </ThemeLayout>
     </Router>

@@ -13,7 +13,7 @@ import CommentBoard from '../components/CommentBoard'; // Import CommentBoard
 const generateFloatingElementProps = (id) => {
   const animationNames = ['float1', 'float2', 'float3'];
   const randomAnimation = animationNames[Math.floor(Math.random() * animationNames.length)];
-  
+
   const randomStartX = Math.floor(Math.random() * 140) - 20 + 'vw'; // -20vw to 120vw
   const randomEndX = Math.floor(Math.random() * 140) - 20 + 'vw';   // -20vw to 120vw
 
@@ -79,9 +79,9 @@ function HomePage() {
     const interval = setInterval(addElement, 7000);
 
     return () => {
-        clearTimeout(initialTimer1);
-        clearTimeout(initialTimer2);
-        clearInterval(interval);
+      clearTimeout(initialTimer1);
+      clearTimeout(initialTimer2);
+      clearInterval(interval);
     }
   }, []);
 
@@ -120,8 +120,8 @@ function HomePage() {
   };
 
   const handleFloatingElementClick = (id) => {
-    setFloatingElements(prevElements => 
-      prevElements.map(el => 
+    setFloatingElements(prevElements =>
+      prevElements.map(el =>
         el.id === id ? { ...el, isDisappeared: true } : el
       )
     );
@@ -137,8 +137,8 @@ function HomePage() {
       {/* Floating Elements Layer - on top of content but below navbar */}
       <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 5, overflow: 'hidden', pointerEvents: 'none' }}>
         {floatingElements.map(el => (
-          <div 
-            key={el.id} 
+          <div
+            key={el.id}
             className={`floating-element ${el.isDisappeared ? 'disappear-element' : ''}`}
             style={el.style}
             onClick={() => handleFloatingElementClick(el.id)}
@@ -148,11 +148,11 @@ function HomePage() {
         ))}
       </div>
 
-      <h1 className="mb-4 text-center" style={{ color: '#004d00' }}>探索動物世界</h1>
+      <h1 className="mb-4 text-center" style={{ color: '#391717ff' }}>探索動物世界</h1>
 
       {/* Category Filter UI */}
       <div className="d-flex justify-content-center mb-4">
-        <Form.Select 
+        <Form.Select
           aria-label="選擇動物類別"
           value={selectedCategory}
           onChange={e => setSelectedCategory(e.target.value)}
@@ -181,43 +181,43 @@ function HomePage() {
 
           <Row className="justify-content-center">
             <Col xs={12}>
-                <HTMLFlipBook
-                  key={selectedCategory}
-                  width={500}
-                  height={750}
-                  size="stretch"
-                  minWidth={315}
-                  maxWidth={1000}
-                  minHeight={400}
-                  maxHeight={1533}
-                  maxShadowOpacity={0.5}
-                  showCover={true}
-                  flippingTime={800}
-                  onFlip={onPage}
-                  className="demo-book"
-                  ref={flipBook}
-                >
-                  <div key="cover-page" className="demo-page">
-                    <CoverPage />
+              <HTMLFlipBook
+                key={selectedCategory}
+                width={500}
+                height={750}
+                size="stretch"
+                minWidth={315}
+                maxWidth={1000}
+                minHeight={400}
+                maxHeight={1533}
+                maxShadowOpacity={0.5}
+                showCover={true}
+                flippingTime={800}
+                onFlip={onPage}
+                className="demo-book"
+                ref={flipBook}
+              >
+                <div key="cover-page" className="demo-page">
+                  <CoverPage />
+                </div>
+                <div key="toc-left-page" className="demo-page">
+                  <TableOfContents animals={displayedAnimals} flipBook={flipBook} page="left" isTOCJump={isTOCJump} />
+                </div>
+                <div key="toc-right-page" className="demo-page">
+                  <TableOfContents animals={displayedAnimals} flipBook={flipBook} page="right" isTOCJump={isTOCJump} />
+                </div>
+                {displayedAnimals.flatMap((animal, index) => ([
+                  <div key={`${animal.id}-image`} className="demo-page">
+                    <AnimalImagePage animal={animal} flipBook={flipBook} />
+                  </div>,
+                  <div key={`${animal.id}-info`} className="demo-page">
+                    <AnimalInfoPage animal={animal} flipBook={flipBook} />
                   </div>
-                  <div key="toc-left-page" className="demo-page">
-                    <TableOfContents animals={displayedAnimals} flipBook={flipBook} page="left" isTOCJump={isTOCJump} />
-                  </div>
-                  <div key="toc-right-page" className="demo-page">
-                    <TableOfContents animals={displayedAnimals} flipBook={flipBook} page="right" isTOCJump={isTOCJump} />
-                  </div>
-                  {displayedAnimals.flatMap((animal, index) => ([ 
-                    <div key={`${animal.id}-image`} className="demo-page">
-                      <AnimalImagePage animal={animal} flipBook={flipBook} />
-                    </div>,
-                    <div key={`${animal.id}-info`} className="demo-page">
-                      <AnimalInfoPage animal={animal} flipBook={flipBook} />
-                    </div>
-                  ]))}
-                  <div key="blank-last-page" className="demo-page">
-                    <BackCoverPage />
-                  </div>
-                </HTMLFlipBook>
+                ]))}
+                <div key="blank-last-page" className="demo-page">
+                  <BackCoverPage />
+                </div>
+              </HTMLFlipBook>
             </Col>
           </Row>
         </Col>

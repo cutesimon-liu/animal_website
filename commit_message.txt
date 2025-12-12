@@ -1,0 +1,6 @@
+feat: Enhance Chatbot with standard game rules, markdown support, and friendlier persona
+
+- Update websiteInfo.js with detailed game rules (Dark Chess, Xiangqi, 2048 5x5, etc.)
+- Update Chatbot.js to render Markdown (lists, bold text)
+- Update chat.js to accept friendlier chit-chat and increase token limit
+- Add deployment documentation
