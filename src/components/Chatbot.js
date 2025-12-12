@@ -3,10 +3,8 @@ import ReactMarkdown from 'react-markdown';
 import './Chatbot.css';
 import { FaRobot, FaTimes, FaPaperPlane } from 'react-icons/fa'; // Assuming react-icons is installed
 
-// Fallback icons if not using react-icons or if icons are missing
-const RobotIcon = () => <span role="img" aria-label="robot">🤖</span>;
-const CloseIcon = () => <span role="img" aria-label="close">✖️</span>;
-const SendIcon = () => <span role="img" aria-label="send">➤</span>;
+// Fallback icons removed to fix ESLint no-unused-vars error
+
 
 const Chatbot = () => {
     const [isOpen, setIsOpen] = useState(false);
